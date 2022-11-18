@@ -1,19 +1,20 @@
+import moment from "moment";
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useState } from "react";
+import CourseService, { Course } from "../services/course.service";
+import ReviewService, { Review } from "../services/review.service";
 
 
-export default function CoursePage(props: { course: any }) {
-
-    const [rating, setRating] = useState(undefined)
+export default function CoursePage(props: { course: Course, reviews: Review[] }) {
 
     const course = props.course
+    const [reviews, setReviews] = useState(props.reviews)
+    const [rating, setRating] = useState(1)
 
-    function PostReview() {
-        console.log(`Review posted with rating ${rating}`)
-        const reviewInfo = {
-            rating,
-            timePosted: new Date()
-        }
+    async function PostReview() {
+        const reviewService = new ReviewService()
+        await reviewService.postReview(course.id, rating)
+        setReviews(await reviewService.getCourseReviews(course.id))
     }
 
     return (
@@ -25,9 +26,9 @@ export default function CoursePage(props: { course: any }) {
             <div className="border-[1px] border-slate-300 rounded-md w-[100%] min-h-[500px] p-8 mt-8">
                 <h3 className="text-2xl font-medium mb-8">Reviews</h3>
                 <div>
-                    {course.reviews.map((review: any) => (
-                        <div className="">
-                            <p>{review.stars}</p>
+                    {reviews.map((review: Review) => (
+                        <div className="bg-slate-200 rounded-md p-4 mb-4" key={review.id}>
+                            <p>Rating: {review.rating}</p>
                             <p>{review.timePosted}</p>
                         </div>
                     ))}
@@ -54,31 +55,16 @@ export default function CoursePage(props: { course: any }) {
     )
 }
 
-const courses = [{
-    courseCode: 'ECE496',
-    name: 'Capstone Project',
-    description: `This is the capstone course. ECE496Y is a full-year umbrella course for all fourth-year design projects. It is a requirement for all fourth-year electrical and computer engineering students, allowing them to integrate the knowledge acquired over the first three years of study in the planning and execution of project proposed either by the student or by a supervisor.
-
-
-In this course, the students will develop skills that allow them to identify a problem given a brief description its context. Given that many real problems are solved by teams, it is essential that students learn how to work in teams and how to plan a project so that all team members become responsible for specific tasks.
-
-Signup starts in the spring of the calendar year in which you will start the course. See "Almanac" under the Supervisors tab for a course overview. Projects can be chosen from the list or student-proposed. See the Projects tab for project information. Deadlines and process information are under the Students tab.`,
-    id: "1",
-    reviews: [{
-        stars: 4,
-        timePosted: new Date().toDateString()
-    }]
-}]
-
-export function getServerSideProps(context: GetServerSidePropsContext): GetServerSidePropsResult {
+export async function getServerSideProps(context: GetServerSidePropsContext): GetServerSidePropsResult {
     const { id } = context.query
 
-    const course: any = courses.filter(course => course.id === id)[0]
-
-    console.log(id)
+    const course: Course = await (new CourseService()).getCourse(id as string)
+    const reviews: Review[] = await (new ReviewService()).getCourseReviews(id as string)
+    
     return {
         props: {
-            course
+            course,
+            reviews
         } 
     }
 }

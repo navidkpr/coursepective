@@ -1,0 +1,16 @@
+@base_backend_url = http://127.0.0.1:8000
+@course_id =62293719-962b-4f6f-8003-fefdee7720e7
+
+GET {{base_backend_url}}/courses/{{course_id}}
+###
+
+GET {{base_backend_url}}/reviews/course/{{course_id}}
+###
+
+POST {{base_backend_url}}/reviews
+Content-Type: application/json
+
+{
+    "rating": 5,
+    "courseId": "62293719-962b-4f6f-8003-fefdee7720e7"
+}
