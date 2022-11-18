@@ -1,0 +1,4 @@
+databases:
+  - name: coursepective
+    databaseName: coursepective
+    user: npour
