@@ -1,16 +1,37 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from '@nestjs/common';
+import { IndexType, MeilisearchService } from 'src/meilisearch/meilisearch.service';
 import { CoursesService } from './courses.service';
 import { CreateCourseDto } from './dto/create-course.dto';
 import { UpdateCourseDto } from './dto/update-course.dto';
 
 @Controller('courses')
 export class CoursesController {
-  constructor(private readonly coursesService: CoursesService) {}
+  constructor(
+    private readonly coursesService: CoursesService,
+    private readonly meilisearchService: MeilisearchService,
+  ) {}
 
-  // @Post()
-  // create(@Body() createCourseDto: CreateCourseDto) {
-  //   return this.coursesService.create(createCourseDto);
-  // }
+  @Post()
+  async create(@Body() createCourseDto: CreateCourseDto) {
+    const course = await this.coursesService.create(createCourseDto);
+    await this.meilisearchService.addCourseToIndex({
+      courseCode: createCourseDto.courseCode, 
+      courseName: createCourseDto.courseName,
+      courseDescription: createCourseDto.courseDescription,
+    })
+    return course
+  }
+
+  @Post('initialize')
+  async initialize() {
+    return this.meilisearchService.createIndex({ indexType: IndexType.Courses })
+  }
+
+  @Post('search')
+  async search(@Body() body: { searchString: string }) {
+    const { searchString } = body;
+    return this.meilisearchService.searchForCourse(searchString, 8)
+  }
 
   // @Get()
   // findAll() {
