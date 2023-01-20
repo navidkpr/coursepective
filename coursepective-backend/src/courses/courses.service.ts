@@ -13,12 +13,17 @@ export class CoursesService {
     private courseRepository: Repository<Course>,
   ) {}
 
-  async create(createCourseDto: CreateCourseDto) {
-    let course: Course = new Course()
+  async createOrUpdate(createCourseDto: CreateCourseDto) {
+    let course = await this.courseRepository.findOneBy({ courseCode: createCourseDto.courseCode })
+    if (!course) {
+      course = new Course()
+    }
+    
     course.courseCode = createCourseDto.courseCode
     course.name = createCourseDto.courseName
     course.description = createCourseDto.courseDescription
-    await this.courseRepository.insert(course)
+    
+    await this.courseRepository.save(course)
     return course
   }
 

@@ -10,9 +10,15 @@ export interface Course {
 
 class CourseService {
     async getCourse(courseId: string)  {
-        console.log(`${AppConfig.Backend.BaseUrl}/courses/${courseId}`)
         const response = await axios.get(`${AppConfig.Backend.BaseUrl}/courses/${courseId}`)
         return response.data
+    }
+
+    async searchForCourses(searchString: string) {
+        const response = await axios.post(`${AppConfig.Backend.BaseUrl}/courses/search`, {
+            searchString
+        })
+        console.log(response)
     }
 }
 

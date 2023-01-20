@@ -45,6 +45,7 @@ export class MeilisearchService {
 
   public async addCourseToIndex(courseDocument: CourseDocument) {
     const index = await this.getCoursesIndex();
+    await index.deleteDocuments([courseDocument.courseCode])
     const response = await index.addDocuments([courseDocument]);
     return response
   }
