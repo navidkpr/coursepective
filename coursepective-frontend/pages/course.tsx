@@ -29,9 +29,9 @@ export default function CoursePage(props: { course: Course, reviews: Review[] })
                 <h3 className="text-2xl font-medium mb-8">Reviews</h3>
                 <div>
                     {reviews.map((review: Review) => (
-                        <div className="bg-slate-200 rounded-md p-4 mb-4" key={review.id}>
-                            <p className="mb-1">Rating: {review.rating}</p>
-                            <p className="text-sm font-light text-gray-500">{review.timePosted}</p>
+                        <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                            <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                            <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                         </div>
                     ))}
                 </div>
