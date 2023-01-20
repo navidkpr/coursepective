@@ -14,6 +14,7 @@ export class ReviewsService {
   ) {}
 
   create(createReviewDto: CreateReviewDto) {
+    console.log(createReviewDto)
     this.reviewRepository.insert({ rating: createReviewDto.rating, course: { id: createReviewDto.courseId }, timePosted: new Date() })
   }
 

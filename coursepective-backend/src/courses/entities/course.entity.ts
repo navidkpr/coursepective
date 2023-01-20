@@ -8,8 +8,8 @@ export class Course {
 
     @Column()
     name: string
-    
-    @Column()
+
+    @Column({ unique: true })
     courseCode: string
 
     @Column({ default: "" })

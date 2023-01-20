@@ -35,6 +35,10 @@ export class CoursesService {
     return this.courseRepository.findOneByOrFail({ id })
   }
 
+  findOneByCourseCode(courseCode: string) {
+    return this.courseRepository.findOneByOrFail({ courseCode })
+  }
+
   update(id: string, updateCourseDto: UpdateCourseDto) {
     return `This action updates a #${id} course`;
   }

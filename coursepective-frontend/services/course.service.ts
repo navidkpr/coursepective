@@ -9,16 +9,16 @@ export interface Course {
 }
 
 class CourseService {
-    async getCourse(courseId: string)  {
-        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/courses/${courseId}`)
+    async getCourse(courseCode: string)  {
+        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/courses/${courseCode}`)
         return response.data
     }
 
-    async searchForCourses(searchString: string) {
+    async searchForCourses(searchString: string): Promise<Course[]> {
         const response = await axios.post(`${AppConfig.Backend.BaseUrl}/courses/search`, {
             searchString
         })
-        console.log(response)
+        return response.data.courses
     }
 }
 

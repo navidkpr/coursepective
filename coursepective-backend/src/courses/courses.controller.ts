@@ -34,7 +34,10 @@ export class CoursesController {
   @Post('search')
   async search(@Body() body: { searchString: string }) {
     const { searchString } = body;
-    return this.meilisearchService.searchForCourse(searchString, 8)
+    const courses = await this.meilisearchService.searchForCourse(searchString, 8)
+    return {
+      courses
+    }
   }
 
   // @Get()
@@ -42,9 +45,9 @@ export class CoursesController {
   //   return this.coursesService.findAll();
   // }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coursesService.findOne(id);
+  @Get(':courseCode')
+  findOneByCourseCode(@Param('courseCode') courseCode: string) {
+    return this.coursesService.findOneByCourseCode(courseCode);
   }
 
   // @Patch(':id')

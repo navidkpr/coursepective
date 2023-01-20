@@ -1,5 +1,6 @@
 @base_backend_url = http://127.0.0.1:8000
-@course_id =62293719-962b-4f6f-8003-fefdee7720e7
+@course_id =df1c36f2-4221-4307-a488-bfad5a0af489
+@course_code=ece410h1
 
 GET {{base_backend_url}}/courses/{{course_id}}
 ###
@@ -12,5 +13,5 @@ Content-Type: application/json
 
 {
     "rating": 5,
-    "courseId": "62293719-962b-4f6f-8003-fefdee7720e7"
+    "courseId": "df1c36f2-4221-4307-a488-bfad5a0af489"
 }
