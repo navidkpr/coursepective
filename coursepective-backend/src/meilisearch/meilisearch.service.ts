@@ -45,20 +45,13 @@ export class MeilisearchService {
 
   public async addCourseToIndex(courseDocument: CourseDocument) {
     const index = await this.getCoursesIndex();
-    console.log(index)
     const response = await index.addDocuments([courseDocument]);
-    console.log(response)
     return response
   }
 
   public async searchForCourse(searchTerm: string, limit = 8) {
-    console.log(searchTerm)
     const index = await this.getCoursesIndex()
-    
     await index.updateFilterableAttributes(['courseCode', 'courseName']);
-    console.log(index)
-
-    console.log(await index.getDocuments())
     const searchResponse = await index.search(
       searchTerm,
       {
@@ -66,8 +59,6 @@ export class MeilisearchService {
       },
     );
 
-    console.log(searchResponse)
-    
     const courseHits: CourseDocument[] = searchResponse.hits as CourseDocument[];
     return courseHits
   }
