@@ -32,8 +32,8 @@ export class ReviewsController {
     return this.reviewsService.remove(+id);
   }
 
-  @Get('/course/:courseCode')
-  findAllByCourseCode(@Param('courseCode') courseCode: string) {
-    return this.reviewsService.fineAllByCourse(courseCode)
+  @Get('/course/:id')
+  findAllByCourse(@Param('id') courseId: string) {
+    return this.reviewsService.fineAllByCourse(courseId)
   }
 }

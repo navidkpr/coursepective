@@ -57,10 +57,12 @@ export default function CoursePage(props: { course: Course, reviews: Review[] })
 
 export async function getServerSideProps(context: GetServerSidePropsContext): GetServerSidePropsResult {
     const { code } = context.query
-
-    const course: Course = await (new CourseService()).getCourse(code as string)
-    const reviews: Review[] = await (new ReviewService()).getCourseReviews(code as string)
+    console.log(code)
     
+    const course: Course = await (new CourseService()).getCourse(code as string)
+    const reviews: Review[] = await (new ReviewService()).getCourseReviews(course.id)
+    console.log(reviews)
+
     return {
         props: {
             course,
