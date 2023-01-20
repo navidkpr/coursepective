@@ -5,12 +5,14 @@ import { AppService } from './app.service';
 import AppConfig from './config/app_config';
 import { CoursesModule } from './courses/courses.module';
 import { Course } from './courses/entities/course.entity';
+import { MeilisearchModule } from './meilisearch/meilisearch.module';
 import { Review } from './reviews/entities/review.entity';
 import { ReviewsModule } from './reviews/reviews.module';
 
 @Module({
   imports: [
     CoursesModule,
+    MeilisearchModule,
     TypeOrmModule.forRoot({
         type: 'postgres',
         host: AppConfig.Database.Host,

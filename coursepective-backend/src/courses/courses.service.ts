@@ -13,8 +13,13 @@ export class CoursesService {
     private courseRepository: Repository<Course>,
   ) {}
 
-  create(createCourseDto: CreateCourseDto) {
-    return 'This action adds a new course';
+  async create(createCourseDto: CreateCourseDto) {
+    let course: Course = new Course()
+    course.courseCode = createCourseDto.courseCode
+    course.name = createCourseDto.courseName
+    course.description = createCourseDto.courseDescription
+    await this.courseRepository.insert(course)
+    return course
   }
 
   findAll() {

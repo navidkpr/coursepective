@@ -8,7 +8,11 @@ const AppConfig = {
         Password: process.env.DATABASE_PASSWORD,
         DB: process.env.DATABASE_DB,
         SSL: true
-    }
+    },
+    Meilisearch: {
+        Url: process.env.MEILISEARCH_URL,
+        ApiKey: process.env.MEILISEARCH_MASTER_KEY,
+    },
 }
 
 export default AppConfig
