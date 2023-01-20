@@ -25,8 +25,8 @@ export class ReviewsService {
     return this.reviewRepository.findOneByOrFail({ id })
   }
 
-  fineAllByCourse(courseId: string) {
-    return this.reviewRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }})
+  fineAllByCourse(courseCode: string) {
+    return this.reviewRepository.find({ where: { course: { courseCode }}, order: { "timePosted": "DESC" }})
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {

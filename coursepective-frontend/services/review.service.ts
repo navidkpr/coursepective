@@ -20,11 +20,11 @@ class ReviewService {
         return reviews
     }
 
-    async postReview(courseId: string, rating: number): Promise<boolean> {
+    async postReview(courseCode: string, rating: number): Promise<boolean> {
         try {
             const response = await axios.post(`${AppConfig.Backend.BaseUrl}/reviews`, {
                 rating,
-                courseId
+                courseCode
             })
             return true
         } catch (error) {
