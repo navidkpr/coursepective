@@ -12,12 +12,12 @@ export class CoursesController {
   ) {}
 
   @Post()
-  async create(@Body() createCourseDto: CreateCourseDto) {
+  async createOrUpdate(@Body() createCourseDto: CreateCourseDto) {
     createCourseDto.courseCode = createCourseDto.courseCode.toLowerCase()
     createCourseDto.courseName = createCourseDto.courseName.toLowerCase()
     createCourseDto.courseDescription = createCourseDto.courseDescription.toLowerCase()
     
-    const course = await this.coursesService.create(createCourseDto);
+    const course = await this.coursesService.createOrUpdate(createCourseDto);
     await this.meilisearchService.addCourseToIndex({
       courseCode: createCourseDto.courseCode, 
       courseName: createCourseDto.courseName,
