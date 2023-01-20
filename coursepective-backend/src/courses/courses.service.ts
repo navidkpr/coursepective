@@ -14,10 +14,6 @@ export class CoursesService {
   ) {}
 
   async create(createCourseDto: CreateCourseDto) {
-    createCourseDto.courseCode = createCourseDto.courseCode.toLowerCase()
-    createCourseDto.courseName = createCourseDto.courseName.toLowerCase()
-    createCourseDto.courseDescription = createCourseDto.courseDescription.toLowerCase()
-    
     let course: Course = new Course()
     course.courseCode = createCourseDto.courseCode
     course.name = createCourseDto.courseName
