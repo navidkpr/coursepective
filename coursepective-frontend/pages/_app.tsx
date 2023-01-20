@@ -1,26 +1,30 @@
 import { UserProvider } from '@auth0/nextjs-auth0/client';
-import type { NextPage, NextPage } from 'next';
-import type { AppProps, AppProps } from 'next/app';
+import type { NextPage } from 'next';
+import type { AppProps } from 'next/app';
 import NextNProgress from 'nextjs-progressbar';
-import type { ReactElement, ReactElement, ReactNode, ReactNode } from 'react';
+import type { ReactElement, ReactNode } from 'react';
+import Page from '.';
+import Layout from '../components/Layout';
 import '../styles/globals.css';
 
-export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
-  getLayout?: (page: ReactElement) => ReactNode
-}
+// Page.getLayout = function getLayout(page: any) {
+//   return (
+//     <Layout>{page}</Layout>
+//   )
+// }
 
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
-
-export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
+export default function MyApp({ Component, pageProps }: any) {
   // Use the layout defined at the page level, if available
-  const getLayout = Component.getLayout ?? ((page) => page)
+  // const getLayout = Component.getLayout || ((page: any) => page)
 
-  return getLayout(
-    <UserProvider>  
-      <NextNProgress color="#2563eb" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={true} />
-      <Component {...pageProps} />
-    </UserProvider>
+  return (
+    <>
+      <UserProvider>
+        <Layout>
+          <NextNProgress color="#2563eb" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={true} />
+          <Component {...pageProps} />
+        </Layout>
+      </UserProvider>
+    </>
   )
 }

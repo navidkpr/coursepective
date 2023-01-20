@@ -15,7 +15,7 @@ const Search: React.FC<ISearch> = () => {
 
   return (
     <form
-      className="form-control flex-col items-center gap-y-5"
+      className="flex flex-col items-center gap-y-5 min-w-full"
       onSubmit={(e) => {
         e.preventDefault();
         searchForCourse()

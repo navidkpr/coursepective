@@ -16,18 +16,18 @@ export default function CoursePage(props: { course: Course, reviews: Review[]}) 
     const [rating, setRating] = useState(1)
 
     async function PostReview() {
+        if (!user) {
+            return
+        }
         const reviewService = new ReviewService()
-        console.log(user)
-        await reviewService.postReview(course.id, rating)
+        await reviewService.postReview(course.id, rating, user.email as string)
         setReviews(await reviewService.getCourseReviews(course.id))
     }
 
     return (
-        <Layout>
+        <>
         <div className="flex justify-center flex-col items-center">
         <div className="flex flex-col self-center items-center m-8 lg:w-[920px] xl:w-[1080px]">
-        <a href="/api/auth/login">Login</a>
-        <a href="/api/auth/logout">Logout</a>
             <h1 className="text-3xl font-bold">{course.name}</h1>
             <h2 className="text-2xl font-semibold">{course.courseCode.toUpperCase()}</h2>
             <p className="text-l mt-8">{course.description.replace(/(?<=(?:^|[.?!])\W*)[a-z]/g, i => i.toUpperCase())}</p>
@@ -36,31 +36,39 @@ export default function CoursePage(props: { course: Course, reviews: Review[]}) 
                 <div>
                     {reviews.map((review: Review) => (
                         <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                            <p className="mb-1 text-slate-800 font-semibold">{review.user.email}</p>
                             <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
                             <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                         </div>
                     ))}
                 </div>
-                <div className="mt-8 flex-col min-w-[300px]">
-                    <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
-                    <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                    <button 
-                        className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
-                        onClick={PostReview}
-                    >
-                        Post Review
-                    </button>
-                </div>
+                { user && (
+                    <div className="mt-8 flex-col min-w-[300px]">
+                            <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
+                            <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <button 
+                                className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                onClick={PostReview}
+                            >
+                                Post Review
+                            </button>
+                    </div>
+                )}
+                { !user && (
+                    <div className="mt-8 flex-col min-w-[300px]">
+                            <h4 className="mb-2 text-lg">Log in to post a review!</h4>
+                    </div>
+                )}
             </div>
         </div>
         </div>
-        </Layout>
+        </>
     )
 }
 

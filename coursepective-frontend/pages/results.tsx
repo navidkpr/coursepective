@@ -14,7 +14,7 @@ export default function ResultsPage(props: { courses: Course[] }) {
     const courses = props.courses
 
     return (
-        <Layout>
+        <>
             <div className="flex justify-center flex-col items-center">
             <div className="flex flex-col self-center items-center m-8 lg:w-[920px] xl:w-[1080px]">
                 <table className="w-[100%] mb-2 p-4 table-normal border-separate border-spacing-y-4 bg-slate-600">
@@ -26,7 +26,7 @@ export default function ResultsPage(props: { courses: Course[] }) {
                     </thead>
                     <tbody>
                         {courses.map(course => (
-                            <tr className="bg-slate-800 mb-2 p-4 hover:bg-slate-700 active:scale-[97.5%] cursor-pointer" onClick={() => {
+                            <tr className="bg-slate-800 mb-2 p-4 hover:bg-slate-700 active:scale-[97.5%] cursor-pointer" key={course.courseCode} onClick={() => {
                                 router.push(`/course?code=${course.courseCode}`);
                             }}>
                                 <td>
@@ -41,7 +41,7 @@ export default function ResultsPage(props: { courses: Course[] }) {
                 </table>
             </div>
             </div>
-        </Layout>
+        </>
     )
 }
 
