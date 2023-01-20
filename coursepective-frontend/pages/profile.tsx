@@ -24,9 +24,9 @@ export default function Profile() {
                             <h1 className="font-bold text-center text-3xl text-gray-900">{user.name}</h1>
                             <p className="text-center text-sm text-gray-400 font-medium">{user.name}</p>
 
-                            <div className="w-full">
+                            {/* <div className="w-full">
                                 <h3 className="font-medium text-gray-900 text-left px-6">Recent reviews</h3>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
 
