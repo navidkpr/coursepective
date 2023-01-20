@@ -2,10 +2,11 @@ import requests
 from playwright.sync_api import sync_playwright
 from bs4 import BeautifulSoup
 
+p = sync_playwright().start()
+browser = p.webkit.launch()
+
 def get_html_from_url(url):
     print('getting content')
-    p = sync_playwright().start()
-    browser = p.webkit.launch()
     page = browser.new_page()
     page.goto(url)
     print('got page')
@@ -18,66 +19,44 @@ def get_html_from_url(url):
     # response = requests.get(url, headers=headers)
     # return response.content
 
-def get_products_from_url(url):
-    # url = "https://google.com"
-    html = get_html_from_url(url) 
-    # f = open("test.html", "w")
-    # f.write(html)
-    # f.close()
+def get_courses_from_url(url):
+    html = get_html_from_url(url)
+    print(html)
     soup = BeautifulSoup(html, 'html.parser')
 
-    furnitures = []
-    for item in soup.select('.TrackedProductCardWrapper-inView'):
-        furniture = {}
+    courses = []
+    for item in soup.select('.views-row')[::2]:
+        course = {}
         try:
-            # Skip item if out of stock
-            if len(item.select('.OutOfStockOverlay-text')) > 0:
-                continue
-
-            # Get name
-            try:
-                product_name = item.select('h2')[0].get_text().strip()
-            except:
-                print('product name missing')
-                continue
-            furniture['product_name'] = product_name
-
-            # Get link
-            try:
-                product_link = item.select('a')[0]['href']
-            except:
-                print('product_link missing')
-                continue
-            furniture['product_page_url'] = product_link
-
-            # Get image
-            try:
-                product_image_url = item.select('img')[0]['src']
-            except:
-                print('product image missing')
-                continue
-            furniture['image_url'] = product_image_url
-
-            # Get price
-            product_costs = []
-            try:
-                for potential_cost in item.select('.SFPrice')[0].select('span'):
-                    curr_potential_cost = extract_price_from_string(potential_cost.get_text())
-                    if curr_potential_cost is not None:
-                        product_costs.append(curr_potential_cost)
-                product_cost = min(product_costs)
-            except Exception as ee:
-                print("Error Found", ee)
-                product_cost = None
-                continue
-            furniture['sale_price'] = product_cost
-            furnitures.append(furniture)
+            course_code_and_name = item.select('h3')[0].get_text().strip()
+        except:
+            print('course code/name missing')
+            continue
+        course_code, course_name = course_code_and_name.split(' - ', 1)
+        course['course_name'] = course_name
+        course['course_code'] = course_code
+        try:
+            course_description = item.select('div')[0].select('p')[0].get_text().strip()
+        except:
+            print('course description missing')
+            continue
+        course['course_description'] = course_description
+        try:
+            courses.append(course)
         except Exception as e:
             print('FOUND ERROR:', e)
             pass
-    return furnitures
 
-# crawler = Crawler()
-# wayfair_url = "https://www.wayfair.com/furniture/sb0/sofas-c413892.html"
-# products = crawler.get_products_from_url('https://www.wayfair.com/furniture/sb0/sofas-c413892.html')
-# print(products)
+    return courses
+
+for i in range(1, 50):
+    url = f"https://engineering.calendar.utoronto.ca/search-courses?course_keyword=&field_section_value=All&field_subject_area_target_id=All&page={i}"
+    courses = get_courses_from_url(url)
+    for course in courses:
+        body = {
+            'courseName': course['course_name'],
+            'courseCode': course['course_code'],
+            'courseDescription': course['course_description']
+        }
+        print(body)
+        requests.post('http://localhost:8000/courses', json=body)
