@@ -6,18 +6,11 @@ p = sync_playwright().start()
 browser = p.webkit.launch()
 
 def get_html_from_url(url):
-    print('getting content')
+    print(f'getting page content for {url}')
     page = browser.new_page()
     page.goto(url)
-    print('got page')
     content = page.content()
-    print('got content')
     return content
-    # page.screenshot(path=f'example-{browser_type.name}.png')
-    # headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36'}
-
-    # response = requests.get(url, headers=headers)
-    # return response.content
 
 def get_courses_from_url(url):
     html = get_html_from_url(url)
@@ -58,5 +51,4 @@ for i in range(1, 50):
             'courseCode': course['course_code'],
             'courseDescription': course['course_description']
         }
-        print(body)
         requests.post('http://localhost:8000/courses', json=body)
