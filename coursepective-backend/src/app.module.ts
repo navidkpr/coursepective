@@ -8,6 +8,9 @@ import { Course } from './courses/entities/course.entity';
 import { MeilisearchModule } from './meilisearch/meilisearch.module';
 import { Review } from './reviews/entities/review.entity';
 import { ReviewsModule } from './reviews/reviews.module';
+import { User } from './user/entities/user.entity';
+import { UserModule } from './user/user.module';
+import { AuthzModule } from './authz/authz.module';
 
 @Module({
   imports: [
@@ -21,10 +24,12 @@ import { ReviewsModule } from './reviews/reviews.module';
         password: AppConfig.Database.Password,
         database: AppConfig.Database.DB,
         ssl: AppConfig.Database.SSL,
-        entities: [Course, Review],
+        entities: [Course, Review, User],
         synchronize: true,
       }),
     ReviewsModule,
+    UserModule,
+    AuthzModule
   ],
   controllers: [AppController],
   providers: [AppService],

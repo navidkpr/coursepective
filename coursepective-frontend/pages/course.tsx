@@ -4,8 +4,11 @@ import { useState } from "react";
 import CourseService, { Course } from "../services/course.service";
 import ReviewService, { Review } from "../services/review.service";
 
+import { UserProfile, useUser } from '@auth0/nextjs-auth0/client';
 
-export default function CoursePage(props: { course: Course, reviews: Review[] }) {
+export default function CoursePage(props: { course: Course, reviews: Review[]}) {
+
+    const { user } = useUser();
 
     const course = props.course
     const [reviews, setReviews] = useState(props.reviews)
@@ -13,6 +16,7 @@ export default function CoursePage(props: { course: Course, reviews: Review[] })
 
     async function PostReview() {
         const reviewService = new ReviewService()
+        console.log(user)
         await reviewService.postReview(course.id, rating)
         setReviews(await reviewService.getCourseReviews(course.id))
     }
@@ -20,6 +24,8 @@ export default function CoursePage(props: { course: Course, reviews: Review[] })
     return (
         <div className="flex justify-center flex-col items-center">
         <div className="flex flex-col self-center items-center m-8 lg:w-[920px] xl:w-[1080px]">
+        <a href="/api/auth/login">Login</a>
+        <a href="/api/auth/logout">Logout</a>
             <h1 className="text-3xl font-bold">{course.name}</h1>
             <h2 className="text-2xl font-semibold">{course.courseCode}</h2>
             <p className="text-l mt-8">{course.description}</p>

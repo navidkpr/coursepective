@@ -2,6 +2,8 @@ import axios from "axios"
 import moment from "moment"
 import AppConfig from "../config/app_config"
 
+import { UserProfile } from '@auth0/nextjs-auth0/client';
+
 export interface Review {
     rating: number,
     id: string,
@@ -24,7 +26,7 @@ class ReviewService {
         try {
             const response = await axios.post(`${AppConfig.Backend.BaseUrl}/reviews`, {
                 rating,
-                courseId
+                courseId,
             })
             return true
         } catch (error) {
