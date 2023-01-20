@@ -1,14 +1,20 @@
-import axios from "axios"
-import moment from "moment"
-import AppConfig from "../config/app_config"
+import axios from "axios";
+import moment from "moment";
+import AppConfig from "../config/app_config";
+
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 
 export interface Review {
     rating: number,
     id: string,
     timePosted: string,
+    user: {
+        email: string
+    }
 }
 
 class ReviewService {
+
     async getCourseReviews(courseId: string)  {
         const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/course/${courseId}`)
         const reviews = response.data
@@ -20,11 +26,12 @@ class ReviewService {
         return reviews
     }
 
-    async postReview(courseId: string, rating: number): Promise<boolean> {
+    async postReview(courseId: string, rating: number, userEmail: string): Promise<boolean> {
         try {
             const response = await axios.post(`${AppConfig.Backend.BaseUrl}/reviews`, {
                 rating,
-                courseId
+                courseId,
+                userEmail
             })
             return true
         } catch (error) {

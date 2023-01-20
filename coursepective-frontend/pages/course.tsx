@@ -5,21 +5,27 @@ import Layout from "../components/Layout";
 import CourseService, { Course } from "../services/course.service";
 import ReviewService, { Review } from "../services/review.service";
 
+import { UserProfile, useUser } from '@auth0/nextjs-auth0/client';
 
-export default function CoursePage(props: { course: Course, reviews: Review[] }) {
+export default function CoursePage(props: { course: Course, reviews: Review[]}) {
+
+    const { user } = useUser();
 
     const course = props.course
     const [reviews, setReviews] = useState(props.reviews)
     const [rating, setRating] = useState(1)
 
     async function PostReview() {
+        if (!user) {
+            return
+        }
         const reviewService = new ReviewService()
-        await reviewService.postReview(course.id, rating)
+        await reviewService.postReview(course.id, rating, user.email as string)
         setReviews(await reviewService.getCourseReviews(course.id))
     }
 
     return (
-        <Layout>
+        <>
         <div className="flex justify-center flex-col items-center">
         <div className="flex flex-col self-center items-center m-8 lg:w-[920px] xl:w-[1080px]">
             <h1 className="text-3xl font-bold">{course.name}</h1>
@@ -30,31 +36,39 @@ export default function CoursePage(props: { course: Course, reviews: Review[] })
                 <div>
                     {reviews.map((review: Review) => (
                         <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                            <p className="mb-1 text-slate-800 font-semibold">{review.user.email}</p>
                             <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
                             <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                         </div>
                     ))}
                 </div>
-                <div className="mt-8 flex-col min-w-[300px]">
-                    <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
-                    <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                    <button 
-                        className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
-                        onClick={PostReview}
-                    >
-                        Post Review
-                    </button>
-                </div>
+                { user && (
+                    <div className="mt-8 flex-col min-w-[300px]">
+                            <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
+                            <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                            <button 
+                                className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                onClick={PostReview}
+                            >
+                                Post Review
+                            </button>
+                    </div>
+                )}
+                { !user && (
+                    <div className="mt-8 flex-col min-w-[300px]">
+                            <h4 className="mb-2 text-lg">Log in to post a review!</h4>
+                    </div>
+                )}
             </div>
         </div>
         </div>
-        </Layout>
+        </>
     )
 }
 

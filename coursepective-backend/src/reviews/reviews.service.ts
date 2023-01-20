@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
@@ -11,11 +12,12 @@ export class ReviewsService {
   constructor(
     @InjectRepository(Review)
     private reviewRepository: Repository<Review>,
+    private usersService: UsersService,
   ) {}
 
-  create(createReviewDto: CreateReviewDto) {
-    console.log(createReviewDto)
-    this.reviewRepository.insert({ rating: createReviewDto.rating, course: { id: createReviewDto.courseId }, timePosted: new Date() })
+  async create(createReviewDto: CreateReviewDto) {
+    const user = await this.usersService.findOneByEmailOrCreate(createReviewDto.userEmail)
+    this.reviewRepository.insert({ rating: createReviewDto.rating, course: { id: createReviewDto.courseId }, timePosted: new Date(), user: user })
   }
 
   findAll() {
@@ -26,8 +28,8 @@ export class ReviewsService {
     return this.reviewRepository.findOneByOrFail({ id })
   }
 
-  fineAllByCourse(courseId: string) {
-    return this.reviewRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }})
+  findAllByCourse(courseId: string) {
+    return this.reviewRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }, relations: ['user']})
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {
