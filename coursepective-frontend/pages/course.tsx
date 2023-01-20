@@ -1,6 +1,7 @@
 import moment from "moment";
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useState } from "react";
+import Layout from "../components/Layout";
 import CourseService, { Course } from "../services/course.service";
 import ReviewService, { Review } from "../services/review.service";
 
@@ -22,20 +23,21 @@ export default function CoursePage(props: { course: Course, reviews: Review[]}) 
     }
 
     return (
+        <Layout>
         <div className="flex justify-center flex-col items-center">
         <div className="flex flex-col self-center items-center m-8 lg:w-[920px] xl:w-[1080px]">
         <a href="/api/auth/login">Login</a>
         <a href="/api/auth/logout">Logout</a>
             <h1 className="text-3xl font-bold">{course.name}</h1>
-            <h2 className="text-2xl font-semibold">{course.courseCode}</h2>
-            <p className="text-l mt-8">{course.description}</p>
+            <h2 className="text-2xl font-semibold">{course.courseCode.toUpperCase()}</h2>
+            <p className="text-l mt-8">{course.description.replace(/(?<=(?:^|[.?!])\W*)[a-z]/g, i => i.toUpperCase())}</p>
             <div className="border-[1px] border-slate-300 rounded-md w-[100%] min-h-[500px] p-8 mt-8">
                 <h3 className="text-2xl font-medium mb-8">Reviews</h3>
                 <div>
                     {reviews.map((review: Review) => (
-                        <div className="bg-slate-200 rounded-md p-4 mb-4" key={review.id}>
-                            <p className="mb-1">Rating: {review.rating}</p>
-                            <p className="text-sm font-light text-gray-500">{review.timePosted}</p>
+                        <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                            <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                            <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                         </div>
                     ))}
                 </div>
@@ -58,6 +60,7 @@ export default function CoursePage(props: { course: Course, reviews: Review[]}) 
             </div>
         </div>
         </div>
+        </Layout>
     )
 }
 

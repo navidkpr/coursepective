@@ -20,8 +20,8 @@ export class CoursesController {
     const course = await this.coursesService.createOrUpdate(createCourseDto);
     await this.meilisearchService.addCourseToIndex({
       courseCode: createCourseDto.courseCode, 
-      courseName: createCourseDto.courseName,
-      courseDescription: createCourseDto.courseDescription,
+      name: createCourseDto.courseName,
+      description: createCourseDto.courseDescription,
     })
     return course
   }
