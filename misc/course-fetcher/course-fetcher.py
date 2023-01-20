@@ -52,3 +52,4 @@ for i in range(1, 50):
             'courseDescription': course['course_description']
         }
         requests.post('http://localhost:8000/courses', json=body)
+        exit()
