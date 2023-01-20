@@ -28,14 +28,14 @@ export default function CoursePage(props: { course: Course, reviews: Review[] })
                 <div>
                     {reviews.map((review: Review) => (
                         <div className="bg-slate-200 rounded-md p-4 mb-4" key={review.id}>
-                            <p>Rating: {review.rating}</p>
-                            <p>{review.timePosted}</p>
+                            <p className="mb-1">Rating: {review.rating}</p>
+                            <p className="text-sm font-light text-gray-500">{review.timePosted}</p>
                         </div>
                     ))}
                 </div>
                 <div className="mt-8 flex-col min-w-[300px]">
                     <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
-                    <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={rating} onChange={(event) => setRating(event.target.value)}>
+                    <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
                         <option value="1">1</option>
                         <option value="2">2</option>
                         <option value="3">3</option>

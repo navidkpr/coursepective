@@ -1,0 +1,19 @@
+POST http://localhost:8000/courses/initialize
+
+###
+POST http://localhost:8000/courses
+Content-Type: application/json
+
+{
+    "courseCode": "ECE",
+    "courseName": "Design Project",
+    "courseDescription": "A full year capstone design project course intended to give students an opportunity to apply their technical knowledge and communication skills. Working in teams under the direct supervision of a faculty member, students develop a design project of their choice from an initial concept to a final working prototype. In the first session, a project proposal is submitted early on, followed by a project requirements specification. A design review meeting is then held to review the proposed design. Lectures given during the first session will develop expertise in various areas related to design and technical communication. In the second session, the teams present their work in a number of ways, including an oral presentation, a poster presentation, a final demonstration at the Design Fair, an individual progress report, and a group final report. Course deliverables are evaluated by both the team's supervisor and one of several course administrators."
+}
+
+###
+POST http://localhost:8000/courses/search
+Content-Type: application/json
+
+{
+    "searchString": "ECE"
+}
