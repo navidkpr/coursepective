@@ -1,7 +1,8 @@
-import '../styles/globals.css'
-import type { ReactElement, ReactNode } from 'react'
-import type { NextPage } from 'next'
-import type { AppProps } from 'next/app'
+import type { NextPage } from 'next';
+import type { AppProps } from 'next/app';
+import NextNProgress from 'nextjs-progressbar';
+import type { ReactElement, ReactNode } from 'react';
+import '../styles/globals.css';
 
 export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode
@@ -15,5 +16,10 @@ export default function MyApp({ Component, pageProps }: AppPropsWithLayout) {
   // Use the layout defined at the page level, if available
   const getLayout = Component.getLayout ?? ((page) => page)
 
-  return getLayout(<Component {...pageProps} />)
+  return getLayout(
+    <>  
+      <NextNProgress color="#2563eb" startPosition={0.3} stopDelayMs={200} height={3} showOnShallow={true} />
+      <Component {...pageProps} />
+    </>  
+  )
 }

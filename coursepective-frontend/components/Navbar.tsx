@@ -1,20 +1,40 @@
 import Link from 'next/link';
+import router, { useRouter } from 'next/router';
+import { useState } from 'react';
 
 export interface headerProps extends React.ComponentPropsWithoutRef<'header'> { }
 
 const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
+    const router = useRouter()
+    const [navSearchTerm, setNavSearchTerm] = useState(typeof(router.query.search) == "string"? router.query.search as string : "")
+
     return (
         <header
             {...headerProps}
         >
             <div className="navbar bg-base-100">
                 <div className="flex-1">
-                    <a className="btn btn-ghost normal-case text-xl">Coursepective</a>
+                    <Link href='/' className="btn btn-ghost normal-case text-xl">Coursepective</Link>
                 </div>
-                <div className="flex-none gap-2">
-                    <div className="form-control">
-                        <input type="text" placeholder="Search" className="input input-bordered" />
-                    </div>
+                <div className="flex-row gap-4">
+
+                    <form className='flex flex-row gap-2' onSubmit={(evt) => {
+                        evt.preventDefault()
+                        router.push(`/results?search=${navSearchTerm}`);
+                    }}>
+                        <div className="form-control">
+                            <input 
+                                type="text" 
+                                placeholder={"search"}
+                                className="input input-bordered text-white"
+                                value={navSearchTerm}
+                                onChange={(evt) => {setNavSearchTerm(evt.target.value)}}
+                            />
+                        </div>
+                        <button className='button p-4 bg-slate-800 hover:bg-slate-700 active:scale-[97.5%] rounded-sm'>
+                            Search
+                        </button>
+                    </form>
                     <div className="dropdown dropdown-end">
                         <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                             <div className="w-10 rounded-full">
