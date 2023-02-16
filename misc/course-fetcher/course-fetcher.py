@@ -14,7 +14,6 @@ def get_html_from_url(url):
 
 def get_courses_from_url(url):
     html = get_html_from_url(url)
-    print(html)
     soup = BeautifulSoup(html, 'html.parser')
 
     courses = []
@@ -44,11 +43,15 @@ def get_courses_from_url(url):
 
 for i in range(1, 50):
     url = f"https://engineering.calendar.utoronto.ca/search-courses?course_keyword=&field_section_value=All&field_subject_area_target_id=All&page={i}"
+    
     courses = get_courses_from_url(url)
+    print(courses)
     for course in courses:
         body = {
             'courseName': course['course_name'],
             'courseCode': course['course_code'],
             'courseDescription': course['course_description']
         }
+        print(body)
+        headers = {"Authorization": "Bearer 4GzI8Bj80znFinwDbe2CFpct2PmELTXs"}
         requests.post('http://localhost:8000/courses', json=body)

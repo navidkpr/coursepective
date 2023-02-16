@@ -5,4 +5,5 @@ import { MeilisearchService } from './meilisearch.service';
   providers: [MeilisearchService],
   exports: [MeilisearchService],
 })
+
 export class MeilisearchModule {}

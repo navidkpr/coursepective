@@ -1,7 +1,10 @@
-POST http://localhost:8000/courses/initialize
-
+GET https://coursepective-meili.onrender.com/indexes
+Authorization: "Bearer 4GzI8Bj80znFinwDbe2CFpct2PmELTXs"
 ###
-POST http://localhost:8000/courses
+POST https://coursepective-meili.onrender.com/courses/initialize
+Authorization: "Bearer 4GzI8Bj80znFinwDbe2CFpct2PmELTXs"
+###
+POST https://coursepective-meili.onrender.com/courses
 Content-Type: application/json
 
 {
