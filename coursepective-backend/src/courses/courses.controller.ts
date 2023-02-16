@@ -47,6 +47,7 @@ export class CoursesController {
 
   @Get(':courseCode')
   findOneByCourseCode(@Param('courseCode') courseCode: string) {
+    courseCode = courseCode.toLowerCase()
     return this.coursesService.findOneByCourseCode(courseCode);
   }
 
