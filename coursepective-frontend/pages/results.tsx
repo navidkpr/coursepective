@@ -49,6 +49,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Ge
     const { search } = context.query
 
     let courses: Course[] = await (new CourseService()).searchForCourses(typeof(search) == "string"? search : "")
+    courses = courses.filter(course => course.courseName)
     console.log(courses)
 
     return {
