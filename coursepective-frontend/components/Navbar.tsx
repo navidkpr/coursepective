@@ -45,7 +45,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
         }
     }
 
-    async function respondToFriendRequest(evt: any, friendRequest: FriendRequest, accepted: bool) {
+    async function respondToFriendRequest(evt: any, friendRequest: FriendRequest, accepted: boolean) {
         try {
             if (user?.email) {
                 const friendService = new FriendService()
@@ -61,7 +61,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
         <header
             {...headerProps}
         >
-            <div className="navbar bg-base-100 mt-2">
+            <div className="navbar bg-base-100 mt-2 w-[100%]">
                 <div className="flex-1">
                     <Link href='/' className="btn btn-ghost normal-case text-xl">Coursepective</Link>
                 </div>
@@ -114,15 +114,15 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                             </div>
                             <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content rounded-box w-52 bg-transparent">
                                 <li className="bg-purple-700 flex flex-row items-center">
-                                    <div className='flex flex-row justify-between items-center hover:cursor-default align-center w-[100%]'>
+                                    <div className='flex flex-row items-center hover:cursor-default align-center'>
                                         <input 
                                             placeholder='Email Address'
-                                            className='p-4 border-none border-transparent focus:border-transparent focus:ring-0'
+                                            className='px-2 py-4 wx-20 border-none border-transparent focus:border-transparent focus:ring-0 rounded-md'
                                             value={addFriendInput}
                                             onChange={(evt) => {setAddFriendInput(evt.target.value)}}
                                         ></input>
                                         <button
-                                            className='bg-slate-800 py-4 px-2'
+                                            className='bg-slate-800 px-2 py-[6px] hover:bg-slate-900 rounded-md'
                                             onClick={() => sendFriendRequest()}
                                         >
                                             Add Friend
@@ -135,12 +135,12 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                                             {friendRequest.origin.email}
                                             <div className='flex flex-row justify-end'>
                                                 <button 
-                                                    className='bg-green-700 p-2 mr-2 hover:bg-green-600 hover:scale-[98%] text-white hover:cursor-pointer'
+                                                    className='bg-green-700 p-2 mr-2 hover:bg-green-600 hover:scale-[98%] text-white hover:cursor-pointer rounded-md'
                                                     onClick={(evt) => {respondToFriendRequest(evt, friendRequest, true)}}>
                                                     Accept
                                                 </button>
                                                 <button 
-                                                    className='bg-red-700 p-2 hover:bg-red-600 hover:scale-[98%] text-white hover:cursor-pointer'
+                                                    className='bg-red-700 p-2 hover:bg-red-600 hover:scale-[98%] text-white hover:cursor-pointer rounded-md'
                                                     onClick={(evt) => {respondToFriendRequest(evt, friendRequest, false)}}>
                                                     Reject
                                                 </button>
