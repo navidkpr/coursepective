@@ -66,18 +66,18 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                         evt.preventDefault()
                         router.push(`/results?search=${navSearchTerm}`);
                     }}>
-                        <div className="">
-                            <input 
-                                type="text" 
-                                placeholder={"Looky"}
-                                className="input input-bordered w-full max-w-xs"
-                                value={navSearchTerm}
-                                onChange={(evt) => {setNavSearchTerm(evt.target.value)}}
-                            />
-                        </div>
-                        <button className='btn'>
-                            Search
-                        </button>
+                            <div className="">
+                                <input 
+                                    type="text" 
+                                    placeholder={"Looky"}
+                                    className="input input-bordered w-full max-w-xs"
+                                    value={navSearchTerm}
+                                    onChange={(evt) => {setNavSearchTerm(evt.target.value)}}
+                                />
+                            </div>
+                            <button className='btn'>
+                                Search
+                            </button>
                     </form>
                     
                     { user && (
@@ -108,9 +108,9 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                                     </div>
                                 )}
                             </div>
-                            <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content rounded-box w-52 bg-transparent">
-                                <li className="bg-purple-700 flex flex-row items-center">
-                                    <div className='flex flex-row items-center hover:cursor-default align-center hover:bg-inherit'>
+                            <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content rounded-box bg-transparent">
+                                <li className="bg-gray-800 flex flex-row items-center">
+                                    <form className='flex flex-row items-center hover:cursor-default align-center hover:bg-inherit'>
                                         <input 
                                             placeholder='Email Address'
                                             className='input px-2 py-4 wx-20 rounded-md'
@@ -119,11 +119,12 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                                         ></input>
                                         <button
                                             className='bg-slate-800 px-2 py-[6px] hover:bg-slate-900 rounded-md'
+                                            type="submit"
                                             onClick={() => sendFriendRequest()}
                                         >
                                             Add Friend
                                         </button>
-                                    </div>
+                                    </form>
                                 </li>
                                 {friendRequests.map(friendRequest => (
                                     <li className='bg-gray-700'>
@@ -155,7 +156,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                                     <img src="https://placeimg.com/80/80/people" />
                                 </div>
                             </label>
-                            <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box w-52">
+                            <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box">
                                 <li>
                                     <a href="/profile"className="justify-between">
                                         Profile
