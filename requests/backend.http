@@ -17,11 +17,11 @@ Content-Type: application/json
 }
 
 ### Get Friend Requests
-GET {{base_backend_url}}/friends/requests
+POST {{base_backend_url}}/friends/requests/get
 Content-Type: application/json
 
 {
-    "userEmail": "navidcheatah@gmail.com"
+    "userEmail": "navidkpour@gmail.com"
 }
 
 ### Send Friend Request
@@ -38,9 +38,9 @@ POST {{base_backend_url}}/friends/requests/response
 Content-Type: application/json
 
 {
-    "accept": 1,
-    "userEmail": "nacojoe@gmail.com",
-    "friendRequestId": "cbea697c-a14e-4938-a09d-19b8a8bf77da"
+    "accept": 0,
+    "userEmail": "navidkpour@gmail.com",
+    "friendRequestId": "3b1f7221-96ae-447b-af1b-1f6663d56202"
 }
 
 ### Get Friends

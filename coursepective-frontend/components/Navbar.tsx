@@ -32,21 +32,30 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
         let x = e.target.getAttribute()
     }
 
-    function sendFriendRequest() {
+    async function sendFriendRequest() {
         if (user?.email) {
             const friendService = new FriendService();
             try {
-                friendService.sendFriendRequest(user.email, addFriendInput)
+                await friendService.sendFriendRequest(user.email, addFriendInput)
+                setAddFriendInput('successfully sent')
             } catch(error) {
                 console.log(error);
+                setAddFriendInput('failed')
             }
         }
     }
 
-    function acceptFriendRequest() {
-        // FriendService.respondToFriendRequest(id, user, true)
+    async function respondToFriendRequest(evt: any, friendRequest: FriendRequest, accepted: bool) {
+        try {
+            if (user?.email) {
+                const friendService = new FriendService()
+                await friendService.respondToFriendRequest(user.email, friendRequest.id, accepted)
+                setFriendRequests(friendRequests.filter(req => req.id != friendRequest.id))
+            }
+        } catch (error) {
+            console.log(error)
+        }
     }
-
     
     return (
         <header
@@ -103,15 +112,15 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                         </div>
                         <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content rounded-box w-52 bg-transparent">
                             <li className="bg-purple-700 flex flex-row items-center">
-                                <div className='flex flex-row justify-between items-center hover:cursor-default align-center h-[100%]'>
+                                <div className='flex flex-row justify-between items-center hover:cursor-default align-center w-[100%]'>
                                     <input 
                                         placeholder='Email Address'
-                                        className='p-2 border-none border-transparent focus:border-transparent focus:ring-0'
+                                        className='p-4 border-none border-transparent focus:border-transparent focus:ring-0'
                                         value={addFriendInput}
                                         onChange={(evt) => {setAddFriendInput(evt.target.value)}}
                                     ></input>
                                     <button
-                                        className='bg-slate-800 p-2'
+                                        className='bg-slate-800 py-4 px-2'
                                         onClick={() => sendFriendRequest()}
                                     >
                                         Add Friend
@@ -125,12 +134,12 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                                         <div className='flex flex-row justify-end'>
                                             <button 
                                                 className='bg-green-700 p-2 mr-2 hover:bg-green-600 hover:scale-[98%] text-white hover:cursor-pointer'
-                                                onClick={(evt) => removeHandler}>
+                                                onClick={(evt) => {respondToFriendRequest(evt, friendRequest, true)}}>
                                                 Accept
                                             </button>
                                             <button 
                                                 className='bg-red-700 p-2 hover:bg-red-600 hover:scale-[98%] text-white hover:cursor-pointer'
-                                                onClick={(evt) => removeHandler}>
+                                                onClick={(evt) => {respondToFriendRequest(evt, friendRequest, false)}}>
                                                 Reject
                                             </button>
                                         </div>

@@ -14,10 +14,8 @@ export interface FriendRequest {
 }
 
 class FriendService {
-    async sendFriendRequest(userEmail: string, targetEmail: string): Promise<boolean> {
-        console.log("sending friend request")
-        const response = await axios.post(`${AppConfig.Backend.BaseUrl}/friends/requests`, { originEmail: userEmail, destEmail: targetEmail })
-        return response.data.friendRequests 
+    async sendFriendRequest(userEmail: string, targetEmail: string) {
+        await axios.post(`${AppConfig.Backend.BaseUrl}/friends/requests`, { originEmail: userEmail, destEmail: targetEmail })
     }
 
     async getFriendRequests(userEmail: string): Promise<FriendRequest[]> {
@@ -25,8 +23,8 @@ class FriendService {
         return response.data.friendRequests
     }
 
-    async respondToFriendRequest() {
-
+    async respondToFriendRequest(userEmail: string, friendRequestId: string, accepted: boolean) {
+        await axios.post(`${AppConfig.Backend.BaseUrl}/friends/requests/response`, { userEmail, accept: accepted, friendRequestId })
     }
 }
 
