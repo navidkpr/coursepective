@@ -22,7 +22,7 @@ export class FriendsController {
         return this.friendsService.createFriendRequest(originUser, destUser);
     }
 
-    @Get('/requests')
+    @Post('/requests/get')
     async listIncomingFriendRequests(@Body() body: { userEmail: string }) {
         const { userEmail } = body;
         const user: User = await this.usersService.findOneByEmail(userEmail, ["incomingFriendRequests"]);
