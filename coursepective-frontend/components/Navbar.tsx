@@ -1,7 +1,7 @@
 import { useUser } from '@auth0/nextjs-auth0/client';
 import Link from 'next/link';
-import router, { useRouter } from 'next/router';
-import { useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
+import { useEffect, useState } from 'react';
 import { FriendRequest, default as FriendService } from '../services/friend.service';
 
 export interface headerProps extends React.ComponentPropsWithoutRef<'header'> { }
@@ -27,10 +27,6 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
     useEffect(() => {
         updateFriendRequests()
     }, [user])
-
-    function removeHandler(){
-        let x = e.target.getAttribute()
-    }
 
     async function sendFriendRequest() {
         if (user?.email) {
@@ -84,7 +80,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                         </button>
                     </form>
                     
-                    { user && (
+                    { !user && (
                         <div className="flex-auto">
                         <div className="dropdown dropdown-bottom dropdown-end">
                             <div>
@@ -100,7 +96,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                                         </button>
                                     </div>
                                 )}
-                                { !friendRequests.length && ( // Without dot
+                                { !friendRequests.length && (
                                     <div className="indicator">
                                         <button tabIndex={0}>
                                             <div className="grid h-12 place-items-center btn">
@@ -114,10 +110,10 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                             </div>
                             <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content rounded-box w-52 bg-transparent">
                                 <li className="bg-purple-700 flex flex-row items-center">
-                                    <div className='flex flex-row items-center hover:cursor-default align-center'>
+                                    <div className='flex flex-row items-center hover:cursor-default align-center hover:bg-inherit'>
                                         <input 
                                             placeholder='Email Address'
-                                            className='px-2 py-4 wx-20 border-none border-transparent focus:border-transparent focus:ring-0 rounded-md'
+                                            className='input px-2 py-4 wx-20 rounded-md'
                                             value={addFriendInput}
                                             onChange={(evt) => {setAddFriendInput(evt.target.value)}}
                                         ></input>
