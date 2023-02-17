@@ -15,3 +15,38 @@ Content-Type: application/json
     "rating": 5,
     "courseId": "df1c36f2-4221-4307-a488-bfad5a0af489"
 }
+
+### Get Friend Requests
+GET {{base_backend_url}}/friends/requests
+Content-Type: application/json
+
+{
+    "userEmail": "nacojoe@gmail.com"
+}
+
+### Send Friend Request
+POST {{base_backend_url}}/friends/requests
+Content-Type: application/json
+
+{
+    "originEmail": "navidkpour@gmail.com",
+    "destEmail": "nacojoe@gmail.com"
+}
+
+### Accept/Reject Friend Request
+POST {{base_backend_url}}/friends/requests/response
+Content-Type: application/json
+
+{
+    "accept": 1,
+    "userEmail": "nacojoe@gmail.com",
+    "friendRequestId": "cbea697c-a14e-4938-a09d-19b8a8bf77da"
+}
+
+### Get Friends
+POST {{base_backend_url}}/friends/get
+Content-Type: application/json
+
+{
+    "userEmail": "navidkpour@gmail.com",
+}
