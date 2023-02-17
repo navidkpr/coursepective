@@ -14,12 +14,15 @@ export interface FriendRequest {
 }
 
 class FriendService {
-    async sendFriendRequest() {
-
+    async sendFriendRequest(userEmail: string, targetEmail: string): Promise<boolean> {
+        console.log("sending friend request")
+        const response = await axios.post(`${AppConfig.Backend.BaseUrl}/friends/requests`, { originEmail: userEmail, destEmail: targetEmail })
+        return response.data.friendRequests 
     }
 
-    async getFriendRequests() {
-    
+    async getFriendRequests(userEmail: string): Promise<FriendRequest[]> {
+        const response = await axios.post(`${AppConfig.Backend.BaseUrl}/friends/requests/get`, { userEmail })
+        return response.data.friendRequests
     }
 
     async respondToFriendRequest() {
