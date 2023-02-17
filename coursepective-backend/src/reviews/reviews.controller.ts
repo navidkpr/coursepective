@@ -1,12 +1,16 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { UsersService } from 'src/users/users.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { ReviewsService } from './reviews.service';
 
 @Controller('reviews')
 export class ReviewsController {
-  constructor(private readonly reviewsService: ReviewsService) {}
+  constructor(
+    private readonly reviewsService: ReviewsService,
+    private readonly usersService: UsersService
+  ) {}
 
   // @UseGuards(AuthGuard('jwt'))
   @Post()
@@ -36,8 +40,17 @@ export class ReviewsController {
     return this.reviewsService.remove(+id);
   }
 
+  @Get('/course/:id/:email')
+  async findAllByCourseByEmail(@Param('id') courseId: string, @Param('email') email: string) {
+    console.log('finding reviews by course id and email')
+    const reviews = await this.reviewsService.findAllByCourse(courseId)
+    const user = await this.usersService.findOneByEmail(email)
+    return this.reviewsService.updateReviewEmailsForUser(reviews, user)
+  }
+
   @Get('/course/:id')
-  findAllByCourse(@Param('id') courseId: string) {
-    return this.reviewsService.findAllByCourse(courseId)
+  async findAllByCourse(@Param('id') courseId: string) {
+    const reviews = await this.reviewsService.findAllByCourse(courseId)
+    return this.reviewsService.updateReviewEmailsForUser(reviews)
   }
 }
