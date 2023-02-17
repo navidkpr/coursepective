@@ -28,7 +28,8 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
         updateFriendRequests()
     }, [user])
 
-    async function sendFriendRequest() {
+    async function sendFriendRequest(e: any) {
+        e.preventDefault();
         if (user?.email) {
             const friendService = new FriendService();
             try {
@@ -119,8 +120,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                                         ></input>
                                         <button
                                             className='bg-slate-800 px-2 py-[6px] hover:bg-slate-900 rounded-md'
-                                            type="submit"
-                                            onClick={() => sendFriendRequest()}
+                                            onClick={(e) => sendFriendRequest(e)}
                                         >
                                             Add Friend
                                         </button>
