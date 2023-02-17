@@ -80,7 +80,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                         </button>
                     </form>
                     
-                    { !user && (
+                    { user && (
                         <div className="flex-auto">
                         <div className="dropdown dropdown-bottom dropdown-end">
                             <div>
