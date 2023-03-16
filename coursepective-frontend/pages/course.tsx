@@ -15,10 +15,12 @@ export default function CoursePage(props: { course: Course}) {
     const course = props.course
     const [reviews, setReviews] = useState([])
     const [rating, setRating] = useState(1)
+    const [comments, setComments] = useState("")
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
 
 
     async function updateReviews() {
+        console.log("in updateReviews")
         const reviewService = new ReviewService()
         const userEmail = user? user.email : undefined
         const fetchedReviews: Review[] = await reviewService.getCourseReviews(course.id, userEmail)
@@ -33,11 +35,12 @@ export default function CoursePage(props: { course: Course}) {
     // updateReviews()
 
     async function PostReview() {
+        console.log("in PostReview")
         if (!user) {
             return
         }
         const reviewService = new ReviewService()
-        await reviewService.postReview(course.id, rating, user.email as string)
+        await reviewService.postReview(course.id, rating, user.email, comments)
         updateReviews()
     }
 
@@ -56,12 +59,14 @@ export default function CoursePage(props: { course: Course}) {
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
                                 <p className="mb-1 text-slate-800 font-semibold">{review.user.email}</p>
                                 <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                                <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
                                 <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                             </div>
                         ))}
                     </div>
                     { user && (
                         <div className="mt-8 flex-col min-w-[300px]">
+                            <form>
                                 <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
                                 <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
                                     <option value="1">1</option>
@@ -70,12 +75,16 @@ export default function CoursePage(props: { course: Course}) {
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
+                                <label htmlFor="comments">Comments:</label>
+                                <input type="text" id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
+                                <br></br>
                                 <button 
                                     className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
                                     onClick={PostReview}
                                 >
                                     Post Review
                                 </button>
+                            </form>
                         </div>
                     )}
                     { !user && (
