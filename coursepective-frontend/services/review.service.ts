@@ -46,6 +46,7 @@ class ReviewService {
             })
             return true
         } catch (error) {
+            console.log(rating, courseId, userEmail, comments)
             console.log(error)
             return false
         }
