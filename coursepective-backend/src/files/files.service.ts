@@ -62,6 +62,7 @@ export class FilesService {
     }
 
     public async uploadCourseFileByUser(file, course: Course, user: User) {
+        console.log(file, course, user);
         // this.uploadFile()
     }
 

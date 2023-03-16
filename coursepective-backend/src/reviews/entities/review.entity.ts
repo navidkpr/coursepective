@@ -10,7 +10,7 @@ export class Review {
     @Column()
     rating: number
 
-    @Column()
+    @Column({ default: "" })
     comments: string
 
     @ManyToOne(() => Course, (course) => course.reviews)

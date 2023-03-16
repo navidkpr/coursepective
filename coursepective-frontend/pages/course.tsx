@@ -1,23 +1,23 @@
-import moment from "moment";
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useEffect, useState } from "react";
-import Layout from "../components/Layout";
 import CourseService, { Course } from "../services/course.service";
 import ReviewService, { Review } from "../services/review.service";
 
 import { UserProfile, useUser } from '@auth0/nextjs-auth0/client';
-import reviewService from "../services/review.service";
-
+import axios from "axios";
+import FileService, { File } from "../services/file.service";
 export default function CoursePage(props: { course: Course}) {
 
     const { user } = useUser();
 
     const course = props.course
-    const [reviews, setReviews] = useState([])
+    const [reviews, setReviews] = useState([] as Review[])
+    const [files, setFiles] = useState([] as File[])
     const [rating, setRating] = useState(1)
     const [comments, setComments] = useState("")
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
-
+    const [filesInitialized, setFilesInitialized] = useState(false)
+    const [uploadedFile, setUploadedFile] = useState(null);
 
     async function updateReviews() {
         console.log("in updateReviews")
@@ -28,11 +28,17 @@ export default function CoursePage(props: { course: Course}) {
         setReviewsInitialized(true)
     }
 
+    async function updateFiles() {
+        const fileService = new FileService()
+        const fetchedFiles: File[] = await fileService.getCourseFiles(course.id)
+        setFiles(fetchedFiles)
+        setFilesInitialized(true)
+    }
+
     useEffect(() => {
         updateReviews()
+        updateFiles()
     }, [user])
-    
-    // updateReviews()
 
     async function PostReview() {
         console.log("in PostReview")
@@ -43,6 +49,34 @@ export default function CoursePage(props: { course: Course}) {
         await reviewService.postReview(course.id, rating, user.email, comments)
         updateReviews()
     }
+
+    async function uploadFile() {
+        if (!user) {
+            return
+        }
+        const reviewService = new ReviewService()
+        await reviewService.postReview(course.id, rating, user.email as string)
+        updateReviews()
+    }
+
+    const uploadToClient = (event: any) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            setUploadedFile(file);
+        }
+    };
+
+    const uploadToServer = async () => {
+        const body = new FormData();
+        if (!uploadedFile || !user) {
+            return;
+        }
+        body.append("file", uploadedFile);
+        const response = await axios.post(`http://localhost:8000/files/course/${course.id}/${user.email}/upload`, {
+            method: "POST",
+            body
+        });
+    };
 
     return (
         <>
@@ -80,7 +114,7 @@ export default function CoursePage(props: { course: Course}) {
                                 <br></br>
                                 <button 
                                     className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
-                                    onClick={PostReview}
+                                    onClick={postReview}
                                 >
                                     Post Review
                                 </button>
@@ -93,7 +127,39 @@ export default function CoursePage(props: { course: Course}) {
                         </div>
                     )}
                 </div>
-            ) }
+            )}
+            { filesInitialized && (
+                <div className="border-[1px] border-slate-300 rounded-md w-[100%] min-h-[500px] p-8 mt-8">
+                    <h3 className="text-2xl font-medium mb-8">Related Files</h3>
+                    <div>
+                        {files.map((file: File) => (
+                            <div className="bg-slate-400 rounded-md p-4 mb-4" key={file.id}>
+                                {/* <p className="mb-1 text-slate-800 font-semibold">{file.user.email}</p> */}
+                                <p className="text-sm font-light text-slate-900 ">{file.timePosted}</p>
+                                <a className="text-sm font-light text-slate-900 " href={file.url}>{"Open File"}</a>
+                            </div>
+                        ))}
+                    </div>
+                    { user && (
+                        <div className="mt-8 flex-col min-w-[300px]">
+                                <h4 className="mb-2 text-lg">Already took this course? Upload related material!</h4>
+                                <input type="file" className="file-input file-input-bordered file-input-secondary w-full max-w-xs" onChange={uploadToClient} />
+                                <button 
+                                    className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                    onClick={uploadToServer}
+                                    type="submit"
+                                >
+                                    Upload File
+                                </button>
+                        </div>
+                    )}
+                    { !user && (
+                        <div className="mt-8 flex-col min-w-[300px]">
+                                <h4 className="mb-2 text-lg">Log in to upload a file!</h4>
+                        </div>
+                    )}
+                </div>
+            )}
         </div>
         </div>
         </>
