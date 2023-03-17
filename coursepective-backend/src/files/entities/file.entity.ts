@@ -8,13 +8,19 @@ export class File {
     id: string
 
     @Column()
-    rating: number
+    location: string
 
     @ManyToOne(() => Course, (course) => course.files)
     course: Course
 
     @ManyToOne(() => User, (user) => user.files)
     user: User
+
+    @Column({ default: false })
+    isVerified: boolean
+
+    @Column()
+    name: string
 
     @Column()
     timePosted: Date

@@ -24,8 +24,7 @@ export class FilesService {
     });
 
 
-    private async s3Upload(file, bucket, name, mimetype)
-    {
+    private async s3Upload(file, bucket, name, mimetype) {
         const params = 
         {
             Bucket: bucket,
@@ -40,37 +39,41 @@ export class FilesService {
             }
         };
 
-        console.log(params);
-
-        try
-        {
+        try {
             let s3Response = await this.s3.upload(params).promise();
 
             console.log(s3Response);
-        }
-        catch (e)
-        {
+            return {
+                url: s3Response.Location
+            }
+        } catch (e) {
             console.log(e);
         }
     }
 
-    private async uploadFile(file)
-    {
-        const { originalname } = file;
-
-        await this.s3Upload(file.buffer, this.AWS_S3_BUCKET, originalname, file.mimetype);
+    private async uploadFile(file, filename: string) {
+        return this.s3Upload(file.buffer, this.AWS_S3_BUCKET, filename, file.mimetype);
     }
 
-    public async uploadCourseFileByUser(file, course: Course, user: User) {
+    public async uploadCourseFileByUser(file, filename: string, course: Course, user: User) {
         console.log(file, course, user);
-        // this.uploadFile()
+        const uploadResponse = await this.uploadFile(file, filename); 
+        this.filesRepository.insert({ 
+            course: { id: course.id }, 
+            timePosted: new Date(), 
+            user: user,
+            location: uploadResponse.url,
+            name: filename,
+            isVerified: true
+        })
+        return uploadResponse;
     }
 
-    async findAllByCourse(courseId: string) {
-        return this.filesRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }, relations: ['user']})
+    async findAllVerifiedByCourse(courseId: string) {
+        return this.filesRepository.find({ where: { course: { id: courseId }, isVerified: true }, order: { "timePosted": "DESC" }, relations: ['user']})
     }
 
-    async updateFileEmailsForUser(files: File[], user: User = null) {
+    async updateFileEmailsForUser(files: File[], user: User) {
         const anonymous = { "email": "Anonymous" };
         let filesWithEmails: any[] = files;
         if (!user) {

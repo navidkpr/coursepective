@@ -44,22 +44,32 @@ export class FilesController {
     // }
 
     // @UseGuards(AuthGuard('jwt'))
-    @Post('/course/:id/:email/upload')
+    @Post('/course/:id/:email/upload/:filename')
     @UseInterceptors(FileInterceptor('file'))
-    async uploadFile(@Param('id') courseId: string, @Param('email') email: string, @UploadedFile() file: Express.Multer.File) {
+    async uploadFile(@Param('id') courseId: string, @Param('email') email: string, @Param('filename') filename: string, @UploadedFile() file: Express.Multer.File) {
         console.log("Uploading File\n------", file);
         const user = await this.usersService.findOneByEmail(email);
         const course = await this.courseService.findOne(courseId);
-        this.filesService.uploadCourseFileByUser(file, course, user);
+        return this.filesService.uploadCourseFileByUser(file, filename, course, user);
     }
 
     @Get('/course/:id/:email')
-    async findAllByCourse(@Param('id') courseId: string, @Param('email') email: string) {
+    async findAllByCourseAndEmail(@Param('id') courseId: string, @Param('email') email: string) {
         console.log('finding files by course id and email')
-        const files = await this.filesService.findAllByCourse(courseId)
+        const files = await this.filesService.findAllVerifiedByCourse(courseId)
         const user = await this.usersService.findOneByEmail(email)
+        const filesWithUsers = await this.filesService.updateFileEmailsForUser(files, user)
+        console.log(filesWithUsers)
         return {
-            files: this.filesService.updateFileEmailsForUser(files, user),
+            files: filesWithUsers
+        }
+    }
+
+    @Get('/course/:id')
+    async findAllByCourse(@Param('id') courseId: string) {
+        const reviews = await this.filesService.findAllVerifiedByCourse(courseId)
+        return {
+            files: this.filesService.updateFileEmailsForUser(reviews, null)
         }
     }
 }
