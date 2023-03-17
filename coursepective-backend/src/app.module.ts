@@ -6,6 +6,8 @@ import { AuthzModule } from './authz/authz.module';
 import AppConfig from './config/app_config';
 import { CoursesModule } from './courses/courses.module';
 import { Course } from './courses/entities/course.entity';
+import { File } from './files/entities/file.entity';
+import { FilesModule } from './files/files.module';
 import { FriendRequest } from './friends/entities/friend_request.entity';
 import { FriendsModule } from './friends/friends.module';
 import { MeilisearchModule } from './meilisearch/meilisearch.module';
@@ -26,13 +28,14 @@ import { UsersModule } from './users/users.module';
         password: AppConfig.Database.Password,
         database: AppConfig.Database.DB,
         ssl: AppConfig.Database.SSL,
-        entities: [Course, Review, FriendRequest, User],
+        entities: [Course, File, Review, FriendRequest, User],
         synchronize: true,
       }),
     ReviewsModule,
     UsersModule,
     AuthzModule,
     FriendsModule,
+    FilesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

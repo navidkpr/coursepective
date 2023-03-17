@@ -1,3 +1,4 @@
+import { File } from "src/files/entities/file.entity"
 import { FriendRequest } from "src/friends/entities/friend_request.entity"
 import { Review } from "src/reviews/entities/review.entity"
 import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
@@ -9,6 +10,9 @@ export class User {
 
     @OneToMany(() => Review, (review) => review.user)
     reviews: Review[]
+
+    @OneToMany(() => File, (file) => file.user)
+    files: File[]
 
     @OneToMany(() => FriendRequest, (friendRequest) => friendRequest.origin)
     outgoingFriendRequests: FriendRequest[]

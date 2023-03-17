@@ -10,6 +10,9 @@ export class Review {
     @Column()
     rating: number
 
+    @Column({ default: "" })
+    comments: string
+
     @ManyToOne(() => Course, (course) => course.reviews)
     course: Course
 

@@ -18,7 +18,7 @@ export class ReviewsService {
 
   async create(createReviewDto: CreateReviewDto) {
     const user = await this.usersService.findOneByEmailOrCreate(createReviewDto.userEmail)
-    this.reviewRepository.insert({ rating: createReviewDto.rating, course: { id: createReviewDto.courseId }, timePosted: new Date(), user: user })
+    this.reviewRepository.insert({ rating: createReviewDto.rating, course: { id: createReviewDto.courseId }, timePosted: new Date(), user: user, comments: createReviewDto.comments })
   }
 
   findAll() {
