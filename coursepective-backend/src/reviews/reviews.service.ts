@@ -26,7 +26,11 @@ export class ReviewsService {
   }
 
   findOne(id: string) {
-    return this.reviewRepository.findOneByOrFail({ id })
+    return this.reviewRepository.findOneByOrFail({ id , })
+  }
+
+  findOneWithUsefulVotes(rid: string){
+    return this.reviewRepository.find({ where: {id: rid}, relations: ['usefulVoters']})
   }
 
   async findAllByCourse(courseId: string) {
@@ -66,6 +70,7 @@ async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
 
   async updateUsefulness(review: Review, user: User, toggle: boolean){
     if (toggle){
+      // console.log(JSON.stringify(review))
       review.usefulVoters.push(user)
       await this.reviewRepository.save(review)
     }
