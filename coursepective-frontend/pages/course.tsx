@@ -18,6 +18,8 @@ export default function CoursePage(props: { course: Course}) {
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
     const [filesInitialized, setFilesInitialized] = useState(false)
     const [uploadedFile, setUploadedFile] = useState(null);
+    const [filename, setFilename] = useState("");
+    const [fileError, setFileError] = useState("");
 
     async function updateReviews() {
         console.log("in updateReviews")
@@ -29,8 +31,9 @@ export default function CoursePage(props: { course: Course}) {
     }
 
     async function updateFiles() {
+        const userEmail = user? user.email : undefined
         const fileService = new FileService()
-        const fetchedFiles: File[] = await fileService.getCourseFiles(course.id)
+        const fetchedFiles: File[] = await fileService.getCourseFiles(course.id, userEmail)
         setFiles(fetchedFiles)
         setFilesInitialized(true)
     }
@@ -40,22 +43,14 @@ export default function CoursePage(props: { course: Course}) {
         updateFiles()
     }, [user])
 
-    async function PostReview() {
-        console.log("in PostReview")
+    async function postReview(e) {
+        e.preventDefault();
+        console.log("Posting review")
         if (!user) {
             return
         }
         const reviewService = new ReviewService()
         await reviewService.postReview(course.id, rating, user.email, comments)
-        updateReviews()
-    }
-
-    async function uploadFile() {
-        if (!user) {
-            return
-        }
-        const reviewService = new ReviewService()
-        await reviewService.postReview(course.id, rating, user.email as string)
         updateReviews()
     }
 
@@ -67,15 +62,32 @@ export default function CoursePage(props: { course: Course}) {
     };
 
     const uploadToServer = async () => {
-        const body = new FormData();
-        if (!uploadedFile || !user) {
+        setFileError("")
+        if (!uploadedFile || !user || filename == "") {
+            if (filename == "") {
+                setFileError("File name is required.")
+            }
             return;
         }
+
+        const body = new FormData();
         body.append("file", uploadedFile);
-        const response = await axios.post(`http://localhost:8000/files/course/${course.id}/${user.email}/upload`, {
-            method: "POST",
-            body
-        });
+
+        var config = {
+            method: 'post',
+            url: `http://localhost:8000/files/course/${course.id}/${user.email}/upload/${filename}`,
+            headers: { 
+                'Content-Type': 'multipart/form-data'
+            },
+            data : body
+        };
+
+        try {
+            await axios(config);
+        } catch (error) {
+            setFileError("Could not upload your file. Please try again.")
+        }
+        updateFiles();
     };
 
     return (
@@ -134,28 +146,46 @@ export default function CoursePage(props: { course: Course}) {
                     <div>
                         {files.map((file: File) => (
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={file.id}>
+                                <div className="flex justify-between">
                                 {/* <p className="mb-1 text-slate-800 font-semibold">{file.user.email}</p> */}
-                                <p className="text-sm font-light text-slate-900 ">{file.timePosted}</p>
-                                <a className="text-sm font-light text-slate-900 " href={file.url}>{"Open File"}</a>
+                                    <div>
+                                        <p>
+                                            <span className="text-sm font-bold capitalize text-slate-900">{file.name}</span>
+                                            <span className="text-sm font-light text-slate-900 ">{" by " + file.user.email}</span>
+                                        </p>
+                                        <p className="text-sm font-light text-slate-900">{file.timePosted}</p>
+                                    </div>
+                                    <a className="text-sm font-light cursor-pointer bg-blue-700 text-white p-4 rounded-sm" href={file.location} target="_blank">{"View File"}</a>
+                                </div>
                             </div>
                         ))}
                     </div>
                     { user && (
                         <div className="mt-8 flex-col min-w-[300px]">
                                 <h4 className="mb-2 text-lg">Already took this course? Upload related material!</h4>
-                                <input type="file" className="file-input file-input-bordered file-input-secondary w-full max-w-xs" onChange={uploadToClient} />
-                                <button 
-                                    className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
-                                    onClick={uploadToServer}
-                                    type="submit"
-                                >
-                                    Upload File
-                                </button>
+                                <div className="flex flex-col gap-4">
+                                    <input type="file" className="file-input file-input-bordered file-input-secondary w-full max-w-xs" onChange={uploadToClient} />
+                                    <input 
+                                        type="input" 
+                                        className="input bg-blue-300 input-bordered w-full max-w-xs placeholder-slate-800 text-black" 
+                                        onChange={(evt: any) => setFilename(evt.target.value as string)}
+                                        value={filename}
+                                        placeholder="File Name (Required)" 
+                                    />
+                                    <button 
+                                        className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                        onClick={uploadToServer}
+                                        type="submit"
+                                    >
+                                        Upload File
+                                    </button>
+                                    <p className="font-light text-xl text-red-200">{fileError}</p>
+                                </div>
                         </div>
                     )}
                     { !user && (
                         <div className="mt-8 flex-col min-w-[300px]">
-                                <h4 className="mb-2 text-lg">Log in to upload a file!</h4>
+                                <h4 className="mb-2 text-lg">Log in to upload course files!</h4>
                         </div>
                     )}
                 </div>

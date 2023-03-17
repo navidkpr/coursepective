@@ -6,14 +6,23 @@ export interface File {
     rating: number,
     id: string,
     timePosted: string,
-    url: string
+    location: string,
+    user: {
+        email: string,
+    }
 }
 
 class FileService {
 
-    async getCourseFiles(courseId: string): Promise<File[]>  {
-        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/course/${courseId}`)
-        const files: File[] = response.data
+    async getCourseFiles(courseId: string, userEmail: string | null | undefined): Promise<File[]>  {
+        let files: File[]
+        if (!userEmail) {
+            files = (await axios.get(`${AppConfig.Backend.BaseUrl}/files/course/${courseId}`)).data.files
+        } else {
+            files = (await axios.get(`${AppConfig.Backend.BaseUrl}/files/course/${courseId}/${userEmail}`)).data.files
+        }
+
+        console.log(files)
         
         for(let i = 0; i < files.length; i++) {
             files[i].timePosted = moment(new Date(files[i].timePosted)).fromNow()
