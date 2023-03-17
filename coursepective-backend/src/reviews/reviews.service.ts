@@ -64,6 +64,19 @@ async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
     return reviewsWithEmails
   }
 
+  async updateUsefulness(review: Review, user: User, toggle: boolean){
+    if (toggle){
+      review.usefulVoters.push(user)
+      await this.reviewRepository.save(review)
+    }
+    else { // TODO: don't know if the partial user is enough to locate user in table to delete
+      const indexToDelete = review.usefulVoters.indexOf(user)
+      review.usefulVoters.splice(indexToDelete, 1)
+      await this.reviewRepository.save(review)
+    }
+    
+  }
+
   update(id: number, updateReviewDto: UpdateReviewDto) {
     return `This action updates a #${id} review`;
   }

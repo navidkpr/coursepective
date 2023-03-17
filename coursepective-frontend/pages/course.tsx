@@ -41,6 +41,16 @@ export default function CoursePage(props: { course: Course}) {
         updateReviews()
     }
 
+    async function onCheck(e: React.ChangeEvent<HTMLInputElement>, rID: string){
+        if (!user) {
+            return
+        }
+        const checked = e.target.checked
+        const userEmail = user.email
+        const reviewService = new ReviewService()
+        reviewService.putReviewUseful(rID, userEmail as string, checked)
+    }
+
     return (
         <>
         <div className="flex justify-center flex-col items-center">
@@ -56,6 +66,13 @@ export default function CoursePage(props: { course: Course}) {
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
                                 <p className="mb-1 text-slate-800 font-semibold">{review.user.email}</p>
                                 <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                                <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                <div className="">
+                                    <label className="space-x-2 cursor-pointer">
+                                        <span className="label-text text-slate-800 align-middle">Was this review useful?</span> 
+                                        <input type="checkbox" className="checkbox checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} />
+                                    </label>
+                                </div>
                                 <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                             </div>
                         ))}

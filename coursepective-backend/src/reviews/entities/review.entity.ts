@@ -1,6 +1,6 @@
 import { Course } from "src/courses/entities/course.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm"
 
 @Entity()
 export class Review {
@@ -15,6 +15,9 @@ export class Review {
 
     @ManyToOne(() => User, (user) => user.reviews)
     user: User
+ 
+    @OneToMany(() => User, (user) => user.usefulReviews, {cascade: true})
+    usefulVoters: User[]
 
     @Column()
     timePosted: Date

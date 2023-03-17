@@ -11,6 +11,7 @@ export interface Review {
     user: {
         email: string
     }
+    usefulVoters: []
 }
 
 class ReviewService {
@@ -39,6 +40,16 @@ class ReviewService {
                 courseId,
                 userEmail
             })
+            return true
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
+
+    async putReviewUseful(rId: string, userEmail: string, action: boolean): Promise<boolean> {
+        try {
+            const response = await axios.put(`${AppConfig.Backend.BaseUrl}/reviews/${rId}/${userEmail}/toggleUsefulVotes/${action}`)
             return true
         } catch (error) {
             console.log(error)
