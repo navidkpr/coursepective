@@ -26,7 +26,7 @@ export class ReviewsService {
   }
 
   findOne(id: string) {
-    return this.reviewRepository.findOneByOrFail({ id , })
+    return this.reviewRepository.findOneByOrFail({ id })
   }
 
   findOneWithUsefulVotes(rid: string){
@@ -34,7 +34,7 @@ export class ReviewsService {
   }
 
   async findAllByCourse(courseId: string) {
-    return this.reviewRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }, relations: ['user']})
+    return this.reviewRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }, relations: ['user','usefulVoters']})
   }
 
 async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
@@ -69,13 +69,16 @@ async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
   }
 
   async updateUsefulness(review: Review, user: User, toggle: boolean){
-    if (toggle){
+    if (toggle === true){
       // console.log(JSON.stringify(review))
       review.usefulVoters.push(user)
       await this.reviewRepository.save(review)
     }
-    else { // TODO: don't know if the partial user is enough to locate user in table to delete
+    else if (toggle === false){ // TODO: don't know if the partial user is enough to locate user in table to delete
+      console.log("Trying to delete")
+      console.log(JSON.stringify(review.usefulVoters))
       const indexToDelete = review.usefulVoters.indexOf(user)
+      console.log(indexToDelete)
       review.usefulVoters.splice(indexToDelete, 1)
       await this.reviewRepository.save(review)
     }

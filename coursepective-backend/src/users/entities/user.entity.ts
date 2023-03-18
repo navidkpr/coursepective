@@ -20,8 +20,8 @@ export class User {
     @OneToMany(() => FriendRequest, (friendRequest) => friendRequest.dest)
     incomingFriendRequests: FriendRequest[]
 
-    @ManyToOne(() => Review, (review) => review.usefulVoters)
-    usefulReviews: User
+    @ManyToMany(() => Review, (review) => review.usefulVoters)
+    usefulReviews: Review[]
 
     @ManyToMany(() => User, (friend) => friend.friends, { onUpdate: "CASCADE" })
     @JoinTable({ joinColumn: { name: 'users_id_1' } })

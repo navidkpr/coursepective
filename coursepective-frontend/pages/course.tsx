@@ -61,7 +61,8 @@ export default function CoursePage(props: { course: Course}) {
         const checked = e.target.checked
         const userEmail = user.email
         const reviewService = new ReviewService()
-        reviewService.putReviewUseful(rID, userEmail as string, checked)
+        await reviewService.putReviewUseful(rID, userEmail as string, checked)
+        await updateReviews();
     }
     const uploadToClient = (event: any) => {
         if (event.target.files && event.target.files[0]) {
