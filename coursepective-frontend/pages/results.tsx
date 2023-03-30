@@ -33,7 +33,7 @@ export default function ResultsPage(props: { courses: Course[] }) {
                                     {course.courseCode.toUpperCase()}
                                 </td>
                                 <td>
-                                    {course.courseName.replace(/\b[a-z](?=[a-z]{2})/g, i => i.toUpperCase())}
+                                    {course.name.replace(/\b[a-z](?=[a-z]{2})/g, i => i.toUpperCase())}
                                 </td>
                             </tr>
                         ))}
@@ -49,7 +49,7 @@ export async function getServerSideProps(context: GetServerSidePropsContext): Ge
     const { search } = context.query
 
     let courses: Course[] = await (new CourseService()).searchForCourses(typeof(search) == "string"? search : "")
-    courses = courses.filter(course => course.courseName)
+    courses = courses.filter(course => course.name)
     console.log(courses)
 
     return {
