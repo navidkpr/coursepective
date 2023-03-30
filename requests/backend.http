@@ -50,3 +50,12 @@ Content-Type: application/json
 {
     "userEmail": "navidkpour@gmail.com",
 }
+
+
+### Register User
+POST {{base_backend_url}}/users
+Content-Type: application/json
+
+{
+    "email": "robchay@rogers.com"
+}

@@ -8,14 +8,18 @@ export interface Review {
     rating: number,
     id: string,
     timePosted: string,
+    comments: string,
     user: {
         email: string
     }
+    usefulVoters: []
 }
 
 class ReviewService {
 
     async getCourseReviews(courseId: string, userEmail: string | undefined | null)  {
+        console.log("in getCourseReviews")
+        console.log(courseId, userEmail)
         let reviews: Review[] = []
         if (userEmail) {
             const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/course/${courseId}/${userEmail}`)
@@ -32,13 +36,26 @@ class ReviewService {
         return reviews
     }
 
-    async postReview(courseId: string, rating: number, userEmail: string): Promise<boolean> {
+    async postReview(courseId: string, rating: number, userEmail: string, comments: string): Promise<boolean> {
+        console.log("in postReview")
         try {
             const response = await axios.post(`${AppConfig.Backend.BaseUrl}/reviews`, {
                 rating,
                 courseId,
-                userEmail
+                userEmail,
+                comments
             })
+            return true
+        } catch (error) {
+            console.log(rating, courseId, userEmail, comments)
+            console.log(error)
+            return false
+        }
+    }
+
+    async putReviewUseful(rId: string, userEmail: string, action: boolean): Promise<boolean> {
+        try {
+            const response = await axios.put(`${AppConfig.Backend.BaseUrl}/reviews/${rId}/${userEmail}/toggleUsefulVotes/${action}`)
             return true
         } catch (error) {
             console.log(error)

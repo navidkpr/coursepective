@@ -53,4 +53,14 @@ export class ReviewsController {
     const reviews = await this.reviewsService.findAllByCourse(courseId)
     return this.reviewsService.updateReviewEmailsForUser(reviews)
   }
+
+  @Put('/:id/:email/toggleUsefulVotes/:action')
+  async updateUsefulness(@Param('id') reviewId: string, @Param('email') email: string, @Param('action') toggleAction: string){
+    console.log(`Marking usefulness as ${toggleAction}`)
+    const review = await this.reviewsService.findOneWithUsefulVotes(reviewId)
+    const user = await this.usersService.findOneByEmail(email)
+    console.log(`There are this many reviews: ${review.length}`)
+    return this.reviewsService.updateUsefulness(review[0], user, toggleAction)
+
+  }
 }

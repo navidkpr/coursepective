@@ -18,7 +18,7 @@ export class ReviewsService {
 
   async create(createReviewDto: CreateReviewDto) {
     const user = await this.usersService.findOneByEmailOrCreate(createReviewDto.userEmail)
-    this.reviewRepository.insert({ rating: createReviewDto.rating, course: { id: createReviewDto.courseId }, timePosted: new Date(), user: user })
+    this.reviewRepository.insert({ rating: createReviewDto.rating, course: { id: createReviewDto.courseId }, timePosted: new Date(), user: user, comments: createReviewDto.comments })
   }
 
   findAll() {
@@ -29,8 +29,12 @@ export class ReviewsService {
     return this.reviewRepository.findOneByOrFail({ id })
   }
 
+  findOneWithUsefulVotes(rid: string){
+    return this.reviewRepository.find({ where: {id: rid}, relations: ['usefulVoters']})
+  }
+
   async findAllByCourse(courseId: string) {
-    return this.reviewRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }, relations: ['user']})
+    return this.reviewRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }, relations: ['user','usefulVoters']})
   }
 
 async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
@@ -62,6 +66,23 @@ async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
     })
 
     return reviewsWithEmails
+  }
+
+  async updateUsefulness(review: Review, user: User, toggle: string){
+    if (toggle == 'true'){
+      console.log("Trying to mark")
+      review.usefulVoters.push(user)
+      await this.reviewRepository.save(review)
+    }
+    else{
+      console.log("Trying to remove mark")
+      console.log(JSON.stringify(review.usefulVoters))
+      const indexToDelete = review.usefulVoters.indexOf(user)
+      console.log(indexToDelete)
+      review.usefulVoters.splice(indexToDelete, 1)
+      await this.reviewRepository.save(review)
+    }
+    
   }
 
   update(id: number, updateReviewDto: UpdateReviewDto) {
