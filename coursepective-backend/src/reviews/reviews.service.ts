@@ -68,14 +68,14 @@ async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
     return reviewsWithEmails
   }
 
-  async updateUsefulness(review: Review, user: User, toggle: boolean){
-    if (toggle === true){
-      // console.log(JSON.stringify(review))
+  async updateUsefulness(review: Review, user: User, toggle: string){
+    if (toggle == 'true'){
+      console.log("Trying to mark")
       review.usefulVoters.push(user)
       await this.reviewRepository.save(review)
     }
-    else if (toggle === false){ // TODO: don't know if the partial user is enough to locate user in table to delete
-      console.log("Trying to delete")
+    else{
+      console.log("Trying to remove mark")
       console.log(JSON.stringify(review.usefulVoters))
       const indexToDelete = review.usefulVoters.indexOf(user)
       console.log(indexToDelete)

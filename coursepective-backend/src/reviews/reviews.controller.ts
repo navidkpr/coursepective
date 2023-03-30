@@ -55,7 +55,7 @@ export class ReviewsController {
   }
 
   @Put('/:id/:email/toggleUsefulVotes/:action')
-  async updateUsefulness(@Param('id') reviewId: string, @Param('email') email: string, @Param('action') toggleAction: boolean){
+  async updateUsefulness(@Param('id') reviewId: string, @Param('email') email: string, @Param('action') toggleAction: string){
     console.log(`Marking usefulness as ${toggleAction}`)
     const review = await this.reviewsService.findOneWithUsefulVotes(reviewId)
     const user = await this.usersService.findOneByEmail(email)
