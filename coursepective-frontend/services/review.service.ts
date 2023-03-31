@@ -77,6 +77,18 @@ class ReviewService {
             return false
         }
     }
+
+    async checkIfReviewed(courseId: string, userEmail: string | undefined | null){
+        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/course/${courseId}/${userEmail}`)
+        console.log("after checking if reviewed")
+        console.log(response.data)
+        if(response.data.length == 0){
+            return false
+        }else{
+            return true
+        }
+
+    }
 }
 
 export default ReviewService

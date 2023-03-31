@@ -21,6 +21,7 @@ export default function CoursePage(props: { course: Course}) {
     const [uploadedFile, setUploadedFile] = useState(null);
     const [filename, setFilename] = useState("");
     const [fileError, setFileError] = useState("");
+    const [reviewError, setReviewError] = useState("");
     const [preChecked, setPreChecked] = useState(new Map)
 
     async function updateReviews() {
@@ -54,8 +55,14 @@ export default function CoursePage(props: { course: Course}) {
             return
         }
         const reviewService = new ReviewService()
-        await reviewService.postReview(course.id, rating, user.email, comments)
-        updateReviews()
+        const alreadyPosted: boolean = await reviewService.checkIfReviewed(course.id, user.email)
+        console.log(alreadyPosted)
+        if(!alreadyPosted){
+            await reviewService.postReview(course.id, rating, user.email, comments)
+            updateReviews()
+        }else{
+            setReviewError("You have already posted a review for this course!")
+        }
     }
 
     function alreadyUseful(reviewsMarkedUseful: Review[], user_email: string | null | undefined){
@@ -175,6 +182,7 @@ export default function CoursePage(props: { course: Course}) {
                                 >
                                     Post Review
                                 </button>
+                                <p className="font-light text-xl text-red-200">{reviewError}</p>
                             </form>
                         </div>
                     )}

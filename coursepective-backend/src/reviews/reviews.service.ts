@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
-import { Repository } from 'typeorm';
+import { QueryFailedError, Repository } from 'typeorm';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { UpdateReviewDto } from './dto/update-review.dto';
 import { Review } from './entities/review.entity';
@@ -40,6 +40,11 @@ export class ReviewsService {
   async findAllByUser(user: User = null) {
     console.log("in find all by user")
     return this.reviewRepository.find({ where: { user: { id: user.id}}, order: { "timePosted": "DESC" }, relations: ['course','user','usefulVoters']})
+  }
+
+  async checkIfExists(courseId: string, userEmail: string) {
+    console.log("checking if exists")
+    return this.reviewRepository.findOne({ where: { course: { id: courseId}, user: { id: userEmail}}})
   }
 
   async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
