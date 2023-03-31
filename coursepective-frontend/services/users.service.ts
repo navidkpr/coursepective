@@ -9,7 +9,7 @@ class UsersService {
 
     async getUser(userEmail: string | undefined | null): Promise<User> {
         console.log("in getUser")
-        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/users/${userEmail}`)
+        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/users/user/${userEmail}`)
         return response.data
     }
 
