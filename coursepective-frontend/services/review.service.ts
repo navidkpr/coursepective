@@ -43,8 +43,12 @@ class ReviewService {
     async getUsersReviews(userEmail: string | undefined | null){
         console.log("in getUsersReviews")
         const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/user/${userEmail}`)
-        console.log(response.data)
-        return response.data
+        let reviews: Review[] = []
+        reviews = response.data
+        for(let i = 0; i < reviews.length; i++) {
+            reviews[i].timePosted = moment(new Date(reviews[i].timePosted)).fromNow()
+        }
+        return reviews
     }
 
     async postReview(courseId: string, rating: number, userEmail: string, comments: string): Promise<boolean> {

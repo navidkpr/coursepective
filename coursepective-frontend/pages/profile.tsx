@@ -3,9 +3,11 @@ import UsersService, { User } from "../services/users.service";
 import ReviewService, { Review } from "../services/review.service";
 import Link from 'next/link';
 import {useState, useEffect} from 'react';
+import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 
-export default function Profile() {
+export default function Profile(props: { user: User}) {
 
+    const profileUser = props.user
     const { user, error, isLoading } = useUser();
     const [friends, setFriends] = useState([] as User[])
     const [friendsInitialized, setFriendsInitialized] = useState(false)   
@@ -29,13 +31,13 @@ export default function Profile() {
     async function updateReviews() {
         console.log("in updateReviews")
         const reviewService = new ReviewService()
-        const userEmail = user? user.email : undefined
+        const userEmail = profileUser.email
         const fetchedReviews: Review[] = await reviewService.getUsersReviews(userEmail)
         setReviews(fetchedReviews)
         setReviewsInitialized(true)
     }
 
-    if(!friendsInitialized) {
+    if(!friendsInitialized && user && user.email === profileUser.email) {
         updateFriends()
     }
 
@@ -50,11 +52,11 @@ export default function Profile() {
                 <div>
                     <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
                         <div className="flex justify-center">
-                                <img src={user.picture} alt={user.name} className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110"/>
+                                <img src="https://www.comm.utoronto.ca/frank/assets/images/FRK2018-600x600.jpg" alt={user.name} className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110"/>
                         </div>
                         
                         <div className="mt-16">
-                            <h1 className="font-bold text-center text-3xl text-gray-900">{user.name}</h1>
+                            <h1 className="font-bold text-center text-3xl text-gray-900">{profileUser.email}</h1>
                             {/* <p className="text-center text-sm text-gray-400 font-medium">{user.name}</p> */}
 
                             {/* <div className="w-full">
@@ -75,7 +77,7 @@ export default function Profile() {
                         <h3 className="text-2xl font-medium mb-2">Friends</h3>
                         {friends.map((user: User) => (
                             <div className="bg-slate-400 rounded-md p-1 mb-1" key={user.email}>
-                                <p className="mb-1 text-slate-800 font-semibold">{user.email}</p>
+                                <a href={`/profile?email=${user.email}`} className="btn btn-ghost normal-case text-m">{user.email}</a>
                             </div>
                         ))}
                         </div>
@@ -98,58 +100,18 @@ export default function Profile() {
             </div>
         </body>
         </html>
-        // <React.Fragment>
-        //     <div classNameName="profile">
-        //         <img 
-        //             classNameName="photo"
-        //             src={user.picture} 
-        //             alt={user.name}
-        //         />
-        //         <table classNameName="info">
-        //             <tbody>
-        //                 <tr>
-        //                     <td>Name:</td>
-        //                     <td>{user.name}</td>
-        //                 </tr>
-        //             </tbody>
-        //             <tbody>
-        //                 <tr>
-        //                     <td>Email:</td>
-        //                     <td>{user.email}</td>
-        //                 </tr>
-        //             </tbody>
-        //         </table>
-        //     </div>
-        //     <style>{`
-        //         .profile {
-        //             width: 100%;
-        //             max-width: 350px;
-        //             margin: 40px auto 0;
-        //             padding: 15px;
-        //             background-color: #fff;
-        //             box-shadow: 0 2px 3px 0px rgba(0,0,0,0.2);
-        //             border-radius: 5px;
-        //         }
-            
-        //         .photo { border-radius: 100%; margin-top: -30px; }
-        //         .title { margin-top: 0; }
-                
-        //         .info {
-        //             width: 100%;
-        //             margin: 0 0 10px;
-        //             border-collapse: collapse;
-        //             font-size: 14px;
-        //             text-align: left;
-        //         }
-                
-        //         .info tr:nth-child(odd) { background-color: #f5f5f5; } 
-        //         .info tr td { padding: 6px; } 
-                
-        //         .info tr td:first-child {
-        //             font-weight: 600;
-        //             text-align: right;
-        //         } 
-        //     `}</style>
-        // </React.Fragment>
     );
 };
+
+export async function getServerSideProps(context: GetServerSidePropsContext): GetServerSidePropsResult {
+    const { email } = context.query
+    console.log(email)
+    
+    const user: User = await (new UsersService()).getUser(email as string)
+
+    return {
+        props: {
+            user,
+        } 
+    }
+}

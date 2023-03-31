@@ -11,7 +11,7 @@ export class UsersController {
       user: this.usersService.create(body.email)
     }
   }
-  @Get(':email')
+  @Get('/user/:email')
   findByEmail(@Param('email') email: string) {
     return this.usersService.findOneByEmail(email)
   }

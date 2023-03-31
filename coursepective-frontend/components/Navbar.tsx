@@ -158,7 +158,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                             </label>
                             <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box">
                                 <li>
-                                    <a href="/profile"className="justify-between">
+                                    <a href={`/profile?email=${user.email}`}className="justify-between">
                                         Profile
                                     </a>
                                 </li>
