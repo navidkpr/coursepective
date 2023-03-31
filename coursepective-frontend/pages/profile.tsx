@@ -1,13 +1,47 @@
 import { useUser } from '@auth0/nextjs-auth0/client';
-import React from 'react';
+import UsersService, { User } from "../services/users.service";
+import ReviewService, { Review } from "../services/review.service";
+import Link from 'next/link';
+import {useState, useEffect} from 'react';
 
 export default function Profile() {
 
     const { user, error, isLoading } = useUser();
+    const [friends, setFriends] = useState([] as User[])
+    const [friendsInitialized, setFriendsInitialized] = useState(false)   
+    const [reviews, setReviews] = useState([] as Review[])
+    const [reviewsInitialized, setReviewsInitialized] = useState(false)
+
 
     if (isLoading) return <div>Loading...</div>;
     if (!user) return <div><a href="/api/auth/login"> Please Log In By Clicking Here</a></div>
     if (error) return <div>{error.message}</div>;
+
+    async function updateFriends() {
+        console.log("in updateFriends")
+        const usersService = new UsersService()
+        const userEmail = user? user.email : undefined
+        const fetchedFriends: User[] = await usersService.getFriends(userEmail)
+        setFriends(fetchedFriends)
+        setFriendsInitialized(true)
+    }
+
+    async function updateReviews() {
+        console.log("in updateReviews")
+        const reviewService = new ReviewService()
+        const userEmail = user? user.email : undefined
+        const fetchedReviews: Review[] = await reviewService.getUsersReviews(userEmail)
+        setReviews(fetchedReviews)
+        setReviewsInitialized(true)
+    }
+
+    if(!friendsInitialized) {
+        updateFriends()
+    }
+
+    if(!reviewsInitialized) {
+        updateReviews()
+    }
 
     return (
         <html>
@@ -21,14 +55,45 @@ export default function Profile() {
                         
                         <div className="mt-16">
                             <h1 className="font-bold text-center text-3xl text-gray-900">{user.name}</h1>
-                            <p className="text-center text-sm text-gray-400 font-medium">{user.name}</p>
+                            {/* <p className="text-center text-sm text-gray-400 font-medium">{user.name}</p> */}
 
                             {/* <div className="w-full">
                                 <h3 className="font-medium text-gray-900 text-left px-6">Recent reviews</h3>
                             </div> */}
                         </div>
                     </div>
-
+                    <div>
+                    {/* <button 
+                        className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
+                        onClick={updateFriends}
+                    >
+                        View Friends
+                    </button> */}
+                    </div>
+                    {friendsInitialized && (
+                        <div>
+                        <h3 className="text-2xl font-medium mb-2">Friends</h3>
+                        {friends.map((user: User) => (
+                            <div className="bg-slate-400 rounded-md p-1 mb-1" key={user.email}>
+                                <p className="mb-1 text-slate-800 font-semibold">{user.email}</p>
+                            </div>
+                        ))}
+                        </div>
+                    )}
+                    {reviewsInitialized && (
+                        <div>
+                        <h3 className="text-2xl font-medium mb-2">Reviews</h3>
+                        {reviews.map((review: Review) => (
+                            <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                            <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                            <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                            <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                            <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
+                            <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                            </div>
+                        ))}
+                        </div>
+                    )}
                 </div>
             </div>
         </body>

@@ -11,8 +11,14 @@ export class UsersController {
       user: this.usersService.create(body.email)
     }
   }
-  // @Get('/course/:id')
-  // findByEmail(@Param('id') userId: string) {
-  //   return this.userService.findOne(userId)
-  // }
+  @Get(':email')
+  findByEmail(@Param('email') email: string) {
+    return this.usersService.findOneByEmail(email)
+  }
+
+  @Get('/friends/:email')
+  async findFriends(@Param('email') email: string){
+    const user = await this.usersService.findOneByEmail(email)
+    return this.usersService.getFriends(user)
+  }
 }

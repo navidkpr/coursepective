@@ -37,7 +37,12 @@ export class ReviewsService {
     return this.reviewRepository.find({ where: { course: { id: courseId }}, order: { "timePosted": "DESC" }, relations: ['user','usefulVoters']})
   }
 
-async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
+  async findAllByUser(user: User = null) {
+    console.log("in find all by user")
+    return this.reviewRepository.find({ where: { user: { id: user.id}}, order: { "timePosted": "DESC" }, relations: ['course','user','usefulVoters']})
+  }
+
+  async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
 
     const anonymous = { "email": "Anonymous" };
     let reviewsWithEmails: any[] = reviews;

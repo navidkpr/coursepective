@@ -48,6 +48,14 @@ export class ReviewsController {
     return this.reviewsService.updateReviewEmailsForUser(reviews, user)
   }
 
+  @Get('/user/:email')
+  async findAllByEmail(@Param('email') email: string) {
+    console.log('finding reviews by email')
+    const user = await this.usersService.findOneByEmail(email)
+    console.log('after finding user')
+    return this.reviewsService.findAllByUser(user)
+  }
+
   @Get('/course/:id')
   async findAllByCourse(@Param('id') courseId: string) {
     const reviews = await this.reviewsService.findAllByCourse(courseId)

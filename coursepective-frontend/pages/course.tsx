@@ -138,8 +138,10 @@ export default function CoursePage(props: { course: Course}) {
                                     <option value="4">4</option>
                                     <option value="5">5</option>
                                 </select>
+                                <br></br>
                                 <label htmlFor="comments">Comments:</label>
-                                <input type="text" id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
+                                <br></br>
+                                <textarea rows={5} cols={100} maxLength={244} placeholder=" This course saved my life because..." id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
                                 <br></br>
                                 <button 
                                     className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
