@@ -6,6 +6,7 @@ import ReviewService, { Review } from "../services/review.service";
 import { UserProfile, useUser } from '@auth0/nextjs-auth0/client';
 import axios from "axios";
 import FileService, { File } from "../services/file.service";
+import { User } from "../services/users.service";
 export default function CoursePage(props: { course: Course}) {
 
     const { user } = useUser();
@@ -20,13 +21,16 @@ export default function CoursePage(props: { course: Course}) {
     const [uploadedFile, setUploadedFile] = useState(null);
     const [filename, setFilename] = useState("");
     const [fileError, setFileError] = useState("");
+    const [preChecked, setPreChecked] = useState(new Map)
 
     async function updateReviews() {
         console.log("in updateReviews")
         const reviewService = new ReviewService()
         const userEmail = user? user.email : undefined
         const fetchedReviews: Review[] = await reviewService.getCourseReviews(course.id, userEmail)
+        const checked = alreadyUseful(fetchedReviews, userEmail)
         setReviews(fetchedReviews)
+        setPreChecked(checked)
         setReviewsInitialized(true)
     }
 
@@ -52,6 +56,28 @@ export default function CoursePage(props: { course: Course}) {
         const reviewService = new ReviewService()
         await reviewService.postReview(course.id, rating, user.email, comments)
         updateReviews()
+    }
+
+    function alreadyUseful(reviewsMarkedUseful: Review[], user_email: string | null | undefined){
+        let alreadyUsefulChecks = new Map() 
+        reviewsMarkedUseful.forEach((review: Review) => {
+            review.usefulVoters.forEach((voter: User) => {
+                if (voter.email === user_email){
+                    alreadyUsefulChecks.set(review.id, true)
+                }
+            })
+        })
+        return alreadyUsefulChecks
+
+    }
+
+    function preCheck(id: string){
+        if (preChecked.get(id) === true){
+            return true
+        }
+        else {
+            return false
+        }
     }
 
     async function onCheck(e: React.ChangeEvent<HTMLInputElement>, rID: string){
@@ -119,7 +145,7 @@ export default function CoursePage(props: { course: Course}) {
                                 <div className="">
                                     <label className="space-x-2 cursor-pointer">
                                         <span className="label-text text-slate-800 align-middle">Was this review useful?</span> 
-                                        <input type="checkbox" className="checkbox checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} />
+                                        <input type="checkbox" className="checkbox checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} checked={preCheck(review.id)} />
                                     </label>
                                 </div>
                                 <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
