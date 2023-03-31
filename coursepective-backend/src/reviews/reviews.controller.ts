@@ -15,6 +15,7 @@ export class ReviewsController {
   // @UseGuards(AuthGuard('jwt'))
   @Post()
   create(@Body() createReviewDto: CreateReviewDto) {
+    console.log("posting review")
     console.log(createReviewDto)
     return this.reviewsService.create(createReviewDto);
   }
@@ -46,6 +47,12 @@ export class ReviewsController {
     const reviews = await this.reviewsService.findAllByCourse(courseId)
     const user = await this.usersService.findOneByEmail(email)
     return this.reviewsService.updateReviewEmailsForUser(reviews, user)
+  }
+
+  @Get('/course/check/:id/:email')
+  async checkIfReviewExists(@Param('id') courseId: string, @Param('email') email: string) {
+    console.log('checking if review exists')
+    return this.reviewsService.checkIfExists(courseId, email)
   }
 
   @Get('/user/:email')

@@ -1,8 +1,9 @@
 import { Course } from "src/courses/entities/course.entity"
 import { User } from "src/users/entities/user.entity"
-import { Column, Entity, ManyToOne, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm"
+import { Column, Entity, ManyToOne, JoinTable, ManyToMany, PrimaryGeneratedColumn, Unique } from "typeorm"
 
 @Entity()
+@Unique(["course", "user"])
 export class Review {
     @PrimaryGeneratedColumn('uuid')
     id: string
