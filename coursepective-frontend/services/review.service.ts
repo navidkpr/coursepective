@@ -11,6 +11,10 @@ export interface Review {
     comments: string,
     user: {
         email: string
+    },
+    course: {
+        courseCode: string,
+        name: string
     }
     usefulVoters: []
 }
@@ -34,6 +38,13 @@ class ReviewService {
         }
         
         return reviews
+    }
+
+    async getUsersReviews(userEmail: string | undefined | null){
+        console.log("in getUsersReviews")
+        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/user/${userEmail}`)
+        console.log(response.data)
+        return response.data
     }
 
     async postReview(courseId: string, rating: number, userEmail: string, comments: string): Promise<boolean> {
