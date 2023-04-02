@@ -51,6 +51,18 @@ class ReviewService {
         return reviews
     }
 
+    async getUsefulReviews(userEmail: string | undefined | null){
+        console.log("in getUsersReviews")
+        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/useful/${userEmail}`)
+        console.log(response.data)
+        let reviews: Review[] = []
+        reviews = response.data
+        for(let i = 0; i < reviews.length; i++) {
+            reviews[i].timePosted = moment(new Date(reviews[i].timePosted)).fromNow()
+        }
+        return reviews
+    }
+
     async postReview(courseId: string, rating: number, userEmail: string, comments: string): Promise<boolean> {
         console.log("in postReview")
         try {
@@ -79,7 +91,8 @@ class ReviewService {
     }
 
     async checkIfReviewed(courseId: string, userEmail: string | undefined | null){
-        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/course/${courseId}/${userEmail}`)
+        // console.log(userEmail)
+        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/course/check/${courseId}/${userEmail}`)
         console.log("after checking if reviewed")
         console.log(response.data)
         if(response.data.length == 0){

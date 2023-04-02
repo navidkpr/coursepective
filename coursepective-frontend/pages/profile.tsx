@@ -13,6 +13,11 @@ export default function Profile(props: { user: User}) {
     const [friendsInitialized, setFriendsInitialized] = useState(false)   
     const [reviews, setReviews] = useState([] as Review[])
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
+    const [usefulReviews, setUsefulReviews] = useState([] as Review[])
+    const [usefulReviewsInitialized, setUsefulReviewsInitialized] = useState(false)
+    const [areFriends, setAreFriends] = useState(false)
+    const [areFriendsInitialized, setAreFriendsInitialized] = useState(false)
+
 
 
     if (isLoading) return <div>Loading...</div>;
@@ -37,12 +42,43 @@ export default function Profile(props: { user: User}) {
         setReviewsInitialized(true)
     }
 
+    async function updateUsefulReviews() {
+        console.log("in updateUsefulReviews")
+        const reviewService = new ReviewService()
+        const userEmail = profileUser.email
+        const fetchedReviews: Review[] = await reviewService.getUsefulReviews(userEmail)
+        setUsefulReviews(fetchedReviews)
+        setUsefulReviewsInitialized(true)
+    }
+
+    async function checkIfFriends(){
+        const usersService = new UsersService()
+        const userEmail = user? user.email : undefined
+        const areFriends = await usersService.areFriends(userEmail, profileUser.email)
+        setAreFriends(areFriends)
+        setAreFriendsInitialized(true)
+    }
+
+    if(!areFriendsInitialized && user && user.email != profileUser.email){
+        checkIfFriends()
+    }
+
     if(!friendsInitialized && user && user.email === profileUser.email) {
         updateFriends()
     }
 
     if(!reviewsInitialized) {
-        updateReviews()
+        if(user.email != profileUser.email){
+            if(areFriendsInitialized && areFriends){
+                updateReviews()
+            }
+        }else{
+            updateReviews()
+        }
+    }
+
+    if(!usefulReviewsInitialized) {
+        updateUsefulReviews()
     }
 
     return (
@@ -88,6 +124,21 @@ export default function Profile(props: { user: User}) {
                         {reviews.map((review: Review) => (
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
                             <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                            <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                            <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                            <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
+                            <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                            </div>
+                        ))}
+                        </div>
+                    )}
+                    {usefulReviewsInitialized && (
+                        <div>
+                        <h3 className="text-2xl font-medium mb-2">Useful Reviews</h3>
+                        {usefulReviews.map((review: Review) => (
+                            <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                            <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                            <p className="mb-1 text-slate-800"> {review.user.email}</p>
                             <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
                             <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
                             <p className="mb-1 text-slate-800">Comments: {review.comments}</p>

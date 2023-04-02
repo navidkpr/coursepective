@@ -17,6 +17,12 @@ class UsersService {
         const response = await axios.get(`${AppConfig.Backend.BaseUrl}/users/friends/${userEmail}`)
         return response.data
     }
+
+    async areFriends(userEmail1: string | undefined | null, userEmail2: string | undefined | null): Promise<boolean> {
+        // console.log("in areFriends")
+        const response = await axios.get(`${AppConfig.Backend.BaseUrl}/users/friends/${userEmail1}/${userEmail2}`)
+        return response.data
+    }
 }
 
 export default UsersService

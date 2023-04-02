@@ -42,9 +42,14 @@ export class ReviewsService {
     return this.reviewRepository.find({ where: { user: { id: user.id}}, order: { "timePosted": "DESC" }, relations: ['course','user','usefulVoters']})
   }
 
-  async checkIfExists(courseId: string, userEmail: string) {
+  async findUsefulByUser(user: User = null) {
+    console.log("in find useful by user")
+    return this.reviewRepository.find({ where: { usefulVoters: { id: user.id}}, order: { "timePosted": "DESC" }, relations: ['course','user','usefulVoters']})
+  }
+
+  async checkIfExists(courseId: string, user: User = null) {
     console.log("checking if exists")
-    return this.reviewRepository.findOne({ where: { course: { id: courseId}, user: { id: userEmail}}})
+    return this.reviewRepository.findOne({ where: { course: { id: courseId}, user: { id: user.id}}})
   }
 
   async updateReviewEmailsForUser(reviews: Review[], user: User = null) {

@@ -52,7 +52,8 @@ export class ReviewsController {
   @Get('/course/check/:id/:email')
   async checkIfReviewExists(@Param('id') courseId: string, @Param('email') email: string) {
     console.log('checking if review exists')
-    return this.reviewsService.checkIfExists(courseId, email)
+    const user = await this.usersService.findOneByEmail(email)
+    return this.reviewsService.checkIfExists(courseId, user)
   }
 
   @Get('/user/:email')
@@ -61,6 +62,14 @@ export class ReviewsController {
     const user = await this.usersService.findOneByEmail(email)
     console.log('after finding user')
     return this.reviewsService.findAllByUser(user)
+  }
+
+  @Get('/useful/:email')
+  async findUsefulByEmail(@Param('email') email: string) {
+    console.log('finding useful reviews by email')
+    const user = await this.usersService.findOneByEmail(email)
+    console.log('after finding user')
+    return this.reviewsService.findUsefulByUser(user)
   }
 
   @Get('/course/:id')
