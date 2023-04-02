@@ -21,4 +21,12 @@ export class UsersController {
     const user = await this.usersService.findOneByEmail(email)
     return this.usersService.getFriends(user)
   }
+
+  
+  @Get('/friends/:user/:friend')
+  async checkIfFriends(@Param('user') email1: string, @Param('friend') email2: string){
+    const user1 = await this.usersService.findOneByEmail(email1)
+    const user2 = await this.usersService.findOneByEmail(email2)
+    return this.usersService.areFriends(user1, user2)
+  }
 }
