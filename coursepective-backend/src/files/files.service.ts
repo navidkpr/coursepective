@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import * as AWS from "aws-sdk";
-import AppConfig from 'src/config/app_config';
 import { Course } from 'src/courses/entities/course.entity';
+import { S3Service } from 'src/s3/s3.service';
 import { User } from 'src/users/entities/user.entity';
 import { UsersService } from 'src/users/users.service';
 import { Repository } from 'typeorm';
@@ -15,49 +14,14 @@ export class FilesService {
         @InjectRepository(File)
         private filesRepository: Repository<File>,
         private usersService: UsersService,
+        private s3Service: S3Service,
     ) {}
 
-    AWS_S3_BUCKET = AppConfig.AWS.S3BucketName
-    s3 = new AWS.S3({
-        accessKeyId: AppConfig.AWS.AccessKey,
-        secretAccessKey: AppConfig.AWS.SecretAccessKey,
-    });
-
-
-    private async s3Upload(file, bucket, name, mimetype) {
-        const params = 
-        {
-            Bucket: bucket,
-            Key: String(name),
-            Body: file,
-            ACL: "public-read",
-            ContentType: mimetype,
-            ContentDisposition:"inline",
-            CreateBucketConfiguration: 
-            {
-                LocationConstraint: "ap-south-1"
-            }
-        };
-
-        try {
-            let s3Response = await this.s3.upload(params).promise();
-
-            console.log(s3Response);
-            return {
-                url: s3Response.Location
-            }
-        } catch (e) {
-            console.log(e);
-        }
-    }
-
-    private async uploadFile(file, filename: string) {
-        return this.s3Upload(file.buffer, this.AWS_S3_BUCKET, filename, file.mimetype);
-    }
+    
 
     public async uploadCourseFileByUser(file, filename: string, course: Course, user: User) {
         console.log(file, course, user);
-        const uploadResponse = await this.uploadFile(file, filename); 
+        const uploadResponse = await this.s3Service.uploadFile(file, filename); 
         this.filesRepository.insert({ 
             course: { id: course.id }, 
             timePosted: new Date(), 

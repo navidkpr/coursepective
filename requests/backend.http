@@ -57,5 +57,5 @@ POST {{base_backend_url}}/users
 Content-Type: application/json
 
 {
-    "email": "robchay@rogers.com"
+    "email": "navidkpour@gmail.com"
 }

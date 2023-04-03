@@ -15,6 +15,7 @@ import { Review } from './reviews/entities/review.entity';
 import { ReviewsModule } from './reviews/reviews.module';
 import { User } from './users/entities/user.entity';
 import { UsersModule } from './users/users.module';
+import { S3Module } from './s3/s3.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { UsersModule } from './users/users.module';
     AuthzModule,
     FriendsModule,
     FilesModule,
+    S3Module,
   ],
   controllers: [AppController],
   providers: [AppService],

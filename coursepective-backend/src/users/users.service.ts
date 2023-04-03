@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { FilesService } from 'src/files/files.service';
+import { S3Service } from 'src/s3/s3.service';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 
@@ -9,6 +11,7 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private s3Service: S3Service
   ) {}
 
   async findOne(id: string, relations=[], relationsLoadStrategy: "join" | "query" = "join") {
@@ -70,5 +73,11 @@ export class UsersService {
     dest.friends = dest.friends.filter(user => user.id != origin.id);
     await this.userRepository.save(origin);
     await this.userRepository.save(dest);
+  }
+
+  async uploadProfilePicture(user: User, profilePictureFile: Express.Multer.File) {
+    user.profilePictureUrl = (await this.s3Service.uploadFile(profilePictureFile, `${user.id}-profile-picture-${profilePictureFile.mimetype}`)).url
+    user.profilePictureVerified = true
+    await this.userRepository.save(user);
   }
 }

@@ -168,7 +168,9 @@ export default function CoursePage(props: { course: Course}) {
                     <h3 className="text-2xl font-medium mb-8">Reviews</h3>
                     <div>
                         {reviews.map((review: Review) => (
-                            <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                            <div className="bg-slate-400 rounded-md p-4 mb-4 flex gap-4" key={review.id}>
+                                <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
+                                <div>
                                 <p className="mb-1 text-slate-800 font-semibold">{review.user.email}</p>
                                 {user && user.email === review.user.email && !editReviewInitialized && (
                                     <button 
@@ -215,6 +217,7 @@ export default function CoursePage(props: { course: Course}) {
                                     <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                                     </div>
                                 )}
+                                </div>
                             </div>
                         ))}
                     </div>

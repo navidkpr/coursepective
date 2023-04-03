@@ -10,7 +10,8 @@ export interface Review {
     timePosted: string,
     comments: string,
     user: {
-        email: string
+        email: string,
+        profilePictureUrl: string,
     },
     course: {
         courseCode: string,

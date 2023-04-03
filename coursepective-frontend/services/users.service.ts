@@ -2,7 +2,8 @@ import axios from "axios"
 import AppConfig from "../config/app_config"
 
 export interface User {
-    email: string
+    email: string,
+    profilePictureUrl: string,
 }
 
 class UsersService {

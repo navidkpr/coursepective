@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { FriendRequest, default as FriendService } from '../services/friend.service';
+import UsersService, { User } from '../services/users.service';
 
 export interface headerProps extends React.ComponentPropsWithoutRef<'header'> { }
 
@@ -13,6 +14,7 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
     const router = useRouter()
     const [navSearchTerm, setNavSearchTerm] = useState(typeof(router.query.search) == "string"? router.query.search as string : "")
     
+    const [backendUser, setBackendUser] = useState(null as User | null)
     const [addFriendInput, setAddFriendInput] = useState("")
     const [friendRequests, setFriendRequests] = useState([] as FriendRequest[]);
 
@@ -24,7 +26,17 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
         }
     }
 
+    async function updateUserFromBackend() {
+        if (user) {
+            const userService = new UsersService()
+            setBackendUser(await userService.getUser(user.email))
+        } else {
+            setBackendUser(null)
+        }
+    }
+
     useEffect(() => {
+        updateUserFromBackend()
         updateFriendRequests()
     }, [user])
 
@@ -153,7 +165,9 @@ const Navbar: React.FC<headerProps> = ({ className, ...headerProps }) => {
                         <div className="dropdown dropdown-end">
                             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                                 <div className="w-10 rounded-full">
-                                    <img src="https://placeimg.com/80/80/people" />
+                                    { backendUser && 
+                                        <img src={backendUser.profilePictureUrl} />
+                                    }
                                 </div>
                             </label>
                             <ul tabIndex={0} className="mt-3 p-2 shadow menu menu-compact dropdown-content bg-base-100 rounded-box">

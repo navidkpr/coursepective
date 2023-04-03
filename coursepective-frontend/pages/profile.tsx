@@ -1,9 +1,11 @@
 import { useUser } from '@auth0/nextjs-auth0/client';
-import UsersService, { User } from "../services/users.service";
-import ReviewService, { Review } from "../services/review.service";
-import Link from 'next/link';
-import {useState, useEffect} from 'react';
+import axios from 'axios';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import ReviewService, { Review } from "../services/review.service";
+import UsersService, { User } from "../services/users.service";
+import course from './course';
 
 export default function Profile(props: { user: User}) {
 
@@ -12,11 +14,15 @@ export default function Profile(props: { user: User}) {
     const [friends, setFriends] = useState([] as User[])
     const [friendsInitialized, setFriendsInitialized] = useState(false)   
     const [reviews, setReviews] = useState([] as Review[])
-    const [reviewsInitialized, setReviewsInitialized] = useState(false)
     const [usefulReviews, setUsefulReviews] = useState([] as Review[])
     const [usefulReviewsInitialized, setUsefulReviewsInitialized] = useState(false)
     const [areFriends, setAreFriends] = useState(false)
     const [areFriendsInitialized, setAreFriendsInitialized] = useState(false)
+    const [fileError, setFileError] = useState("");
+    const [fileSuccess, setFileSuccess] = useState("");
+
+    const [reviewsInitialized, setReviewsInitialized] = useState(false)
+    const [uploadedFile, setUploadedFile] = useState(null);
 
 
 
@@ -81,25 +87,61 @@ export default function Profile(props: { user: User}) {
         updateUsefulReviews()
     }
 
+    const uploadToClient = (event: any) => {
+        if (event.target.files && event.target.files[0]) {
+            const file = event.target.files[0];
+            setUploadedFile(file);
+        }
+    };
+
+    const uploadToServer = async () => {
+        setFileError("")
+        setFileSuccess("")
+        if (!uploadedFile || !user || user.email != profileUser.email) {
+            return;
+        }
+
+        const body = new FormData();
+        body.append("file", uploadedFile);
+
+        var config = {
+            method: 'post',
+            url: `http://localhost:8000/users/${user.email}/profile_picture`,
+            headers: { 
+                'Content-Type': 'multipart/form-data'
+            },
+            data : body
+        };
+
+        try {
+            await axios(config);
+            setFileSuccess("Profile picture successfully changed.")
+        } catch (error) {
+            setFileError("Could not upload your file. Please try again.")
+        }
+    };
+
     return (
         <html>
         <body className="bg-gray-300 antialiased">
-            <div className="container mx-0 my-60 w-[100%]">
+            <div className="container mx-0 my-60 w-[100%] p-4">
                 <div>
-                    <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
-                        <div className="flex justify-center">
-                                <img src="https://www.comm.utoronto.ca/frank/assets/images/FRK2018-600x600.jpg" alt={user.name} className="rounded-full mx-auto absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110"/>
-                        </div>
-                        
-                        <div className="mt-16">
-                            <h1 className="font-bold text-center text-3xl text-gray-900">{profileUser.email}</h1>
-                            {/* <p className="text-center text-sm text-gray-400 font-medium">{user.name}</p> */}
+                    {profileUser.email === user.email && 
+                        <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
+                            <div className="flex justify-center">
+                                    <img src={profileUser.profilePictureUrl} alt={user.name} className="rounded-full mx-auto object-cover absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110"/>
+                            </div>
+                            
+                            <div className="mt-16">
+                                <h1 className="font-bold text-center text-3xl text-gray-900">{profileUser.email}</h1>
+                                {/* <p className="text-center text-sm text-gray-400 font-medium">{user.name}</p> */}
 
-                            {/* <div className="w-full">
-                                <h3 className="font-medium text-gray-900 text-left px-6">Recent reviews</h3>
-                            </div> */}
+                                {/* <div className="w-full">
+                                    <h3 className="font-medium text-gray-900 text-left px-6">Recent reviews</h3>
+                                </div> */}
+                            </div>
                         </div>
-                    </div>
+                    }
                     <div>
                     {/* <button 
                         className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
@@ -108,8 +150,25 @@ export default function Profile(props: { user: User}) {
                         View Friends
                     </button> */}
                     </div>
+                    <div className="flex flex-col mb-4">
+                        <div>
+                            <p className='mr-4 text-slate-800'>Update profile picture</p>
+                            <input type="file" className="file-input file-input-bordered file-input-secondary w-full max-w-xs mr-4" 
+                            onChange={uploadToClient} 
+                            />
+                            <button 
+                                className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                onClick={uploadToServer}
+                                type="submit"
+                            >
+                                Upload File
+                            </button>
+                        </div>
+                        <p className="font-light text-xl text-red-700">{fileError}</p>
+                        <p className="font-light text-xl text-green-700">{fileSuccess}</p>
+                    </div>
                     {friendsInitialized && (
-                        <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+                        <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mb-4">
                             <input type="checkbox" />
                             <h3 className="collapse-title text-xl font-medium">Friends</h3>
                             <div className='collapse-content'>
@@ -122,7 +181,7 @@ export default function Profile(props: { user: User}) {
                         </div>
                     )}
                     {reviewsInitialized && (
-                        <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+                        <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mb-4">
                             <input type="checkbox" />
                             <h3 className="collapse-title text-xl font-medium">Reviews</h3>
                             <div className="collapse-content">
