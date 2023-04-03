@@ -47,7 +47,7 @@ export class ReviewsService {
     return this.reviewRepository.find({ where: { usefulVoters: { id: user.id}}, order: { "timePosted": "DESC" }, relations: ['course','user','usefulVoters']})
   }
 
-  async checkIfExists(courseId: string, user: User = null) {
+  async getUserCourseReview(courseId: string, user: User = null) {
     console.log("checking if exists")
     return this.reviewRepository.findOne({ where: { course: { id: courseId}, user: { id: user.id}}})
   }
@@ -100,8 +100,11 @@ export class ReviewsService {
     
   }
 
-  update(id: number, updateReviewDto: UpdateReviewDto) {
-    return `This action updates a #${id} review`;
+  async update(updateReviewDto: UpdateReviewDto) {
+    console.log("in update review service")
+    const user = await this.usersService.findOneByEmailOrCreate(updateReviewDto.userEmail)
+    const review = await this.getUserCourseReview(updateReviewDto.courseId, user)
+    return this.reviewRepository.save( {id: review.id, rating: updateReviewDto.rating, course: { id: updateReviewDto.courseId }, timePosted: new Date(), user: user, comments: updateReviewDto.comments })
   }
 
   remove(id: number) {

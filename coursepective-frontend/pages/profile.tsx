@@ -109,42 +109,51 @@ export default function Profile(props: { user: User}) {
                     </button> */}
                     </div>
                     {friendsInitialized && (
-                        <div>
-                        <h3 className="text-2xl font-medium mb-2">Friends</h3>
-                        {friends.map((user: User) => (
-                            <div className="bg-slate-400 rounded-md p-1 mb-1" key={user.email}>
-                                <a href={`/profile?email=${user.email}`} className="btn btn-ghost normal-case text-m">{user.email}</a>
+                        <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+                            <input type="checkbox" />
+                            <h3 className="collapse-title text-xl font-medium">Friends</h3>
+                            <div className='collapse-content'>
+                                {friends.map((user: User) => (
+                                    <div className="bg-slate-400 rounded-md p-1 mb-1" key={user.email}>
+                                        <a href={`/profile?email=${user.email}`} className="btn btn-ghost normal-case text-m">{user.email}</a>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
                         </div>
                     )}
                     {reviewsInitialized && (
-                        <div>
-                        <h3 className="text-2xl font-medium mb-2">Reviews</h3>
-                        {reviews.map((review: Review) => (
-                            <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
-                            <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
-                            <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
-                            <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
-                            <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
-                            <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                        <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+                            <input type="checkbox" />
+                            <h3 className="collapse-title text-xl font-medium">Reviews</h3>
+                            <div className="collapse-content">
+                                {reviews.map((review: Review) => (
+                                    <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                                    <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                                    <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                    <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
+                                    <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
                         </div>
                     )}
                     {usefulReviewsInitialized && (
-                        <div>
-                        <h3 className="text-2xl font-medium mb-2">Useful Reviews</h3>
-                        {usefulReviews.map((review: Review) => (
-                            <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
-                            <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
-                            <p className="mb-1 text-slate-800"> {review.user.email}</p>
-                            <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
-                            <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
-                            <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
-                            <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                        <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box">
+                            <input type="checkbox" />
+                            <h3 className="collapse-title text-xl font-medium">Useful Reviews</h3>
+                            <div className="collapse-content">
+                                {usefulReviews.map((review: Review) => (
+                                    <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
+                                    <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                                    <p className="mb-1 text-slate-800"> {review.user.email}</p>
+                                    <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                    <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
+                                    <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                                    </div>
+                                ))}
                             </div>
-                        ))}
                         </div>
                     )}
                 </div>

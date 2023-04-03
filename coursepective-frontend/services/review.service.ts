@@ -80,6 +80,23 @@ class ReviewService {
         }
     }
 
+    async editReview(courseId: string, rating: number, userEmail: string, comments: string): Promise<boolean> {
+        console.log("in editReview")
+        try {
+            const response = await axios.patch(`${AppConfig.Backend.BaseUrl}/reviews`, {
+                rating,
+                courseId,
+                userEmail,
+                comments
+            })
+            return true
+        } catch (error) {
+            console.log(rating, courseId, userEmail, comments)
+            console.log(error)
+            return false
+        }
+    }
+
     async putReviewUseful(rId: string, userEmail: string, action: boolean): Promise<boolean> {
         try {
             const response = await axios.put(`${AppConfig.Backend.BaseUrl}/reviews/${rId}/${userEmail}/toggleUsefulVotes/${action}`)
@@ -90,7 +107,7 @@ class ReviewService {
         }
     }
 
-    async checkIfReviewed(courseId: string, userEmail: string | undefined | null){
+    async getUserCourseReview(courseId: string, userEmail: string | undefined | null){
         // console.log(userEmail)
         const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/course/check/${courseId}/${userEmail}`)
         console.log("after checking if reviewed")
@@ -98,7 +115,7 @@ class ReviewService {
         if(response.data.length == 0){
             return false
         }else{
-            return true
+            return response.data
         }
 
     }

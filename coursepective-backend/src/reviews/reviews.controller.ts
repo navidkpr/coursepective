@@ -31,9 +31,10 @@ export class ReviewsController {
   }
 
   // @UseGuards(AuthGuard('jwt'))
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateReviewDto: UpdateReviewDto) {
-    return this.reviewsService.update(+id, updateReviewDto);
+  @Patch()
+  update(@Body() updateReviewDto: UpdateReviewDto) {
+    console.log("in update review controller")
+    return this.reviewsService.update(updateReviewDto);
   }
 
   @Delete(':id')
@@ -50,10 +51,10 @@ export class ReviewsController {
   }
 
   @Get('/course/check/:id/:email')
-  async checkIfReviewExists(@Param('id') courseId: string, @Param('email') email: string) {
+  async getUserCourseReview(@Param('id') courseId: string, @Param('email') email: string) {
     console.log('checking if review exists')
     const user = await this.usersService.findOneByEmail(email)
-    return this.reviewsService.checkIfExists(courseId, user)
+    return this.reviewsService.getUserCourseReview(courseId, user)
   }
 
   @Get('/user/:email')

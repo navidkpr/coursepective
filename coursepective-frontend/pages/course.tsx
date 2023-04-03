@@ -23,6 +23,7 @@ export default function CoursePage(props: { course: Course}) {
     const [fileError, setFileError] = useState("");
     const [reviewError, setReviewError] = useState("");
     const [preChecked, setPreChecked] = useState(new Map)
+    const [editReviewInitialized, setEditReviewInitialized] = useState(false)
 
     async function updateReviews() {
         console.log("in updateReviews")
@@ -43,6 +44,20 @@ export default function CoursePage(props: { course: Course}) {
         setFilesInitialized(true)
     }
 
+    async function enterEditMode(){
+        setRating(0)
+        setComments("")
+        setEditReviewInitialized(true)
+    }
+
+    async function editReview() {
+        const reviewService = new ReviewService()
+        const userEmail = user? user.email : undefined
+        await reviewService.editReview(course.id, rating, userEmail, comments)
+        setEditReviewInitialized(false)
+        updateReviews()
+    }
+
     useEffect(() => {
         updateReviews()
         updateFiles()
@@ -55,7 +70,7 @@ export default function CoursePage(props: { course: Course}) {
             return
         }
         const reviewService = new ReviewService()
-        const alreadyPosted: boolean = await reviewService.checkIfReviewed(course.id, user.email)
+        const alreadyPosted: boolean = await reviewService.getUserCourseReview(course.id, user.email)
         console.log(alreadyPosted)
         if(!alreadyPosted){
             await reviewService.postReview(course.id, rating, user.email, comments)
@@ -147,16 +162,52 @@ export default function CoursePage(props: { course: Course}) {
                         {reviews.map((review: Review) => (
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
                                 <p className="mb-1 text-slate-800 font-semibold">{review.user.email}</p>
-                                <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
-                                <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
-                                <div className="">
-                                    <label className="space-x-2 cursor-pointer">
-                                        <span className="label-text text-slate-800 align-middle">Was this review useful?</span> 
-                                        <input type="checkbox" className="checkbox checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} checked={preCheck(review.id)} />
-                                    </label>
-                                </div>
-                                <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
-                                <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                                {user && user.email === review.user.email && !editReviewInitialized && (
+                                    <button 
+                                    className="flex bg-blue-600 hover:bg-blue-700 align-right rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                    type="submit"
+                                    onClick={enterEditMode}
+                                    >
+                                        Edit
+                                    </button>
+                                )}
+                                {user && user.email === review.user.email && editReviewInitialized && (
+                                    <div>
+                                        <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={(rating == 0)? review.rating : rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        </select>
+                                        <br></br>
+                                        <label htmlFor="comments">Comments:</label>
+                                        <br></br>
+                                        <textarea rows={5} cols={100} maxLength={244} value={(comments == "")? review.comments : comments} id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
+                                        <br></br>
+                                        <button 
+                                            className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                            onClick={editReview}
+                                        >
+                                            Update Review
+                                        </button>
+                                    </div>
+                                )}
+                                {(!editReviewInitialized || (editReviewInitialized && user && user.email != review.user.email)) && (
+                                    <div>
+                                    <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                    <div className="">
+                                        <label className="space-x-2 cursor-pointer">
+                                            <span className="label-text text-slate-800 align-middle">Was this review useful?</span> 
+                                            <input type="checkbox" className="checkbox checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} checked={preCheck(review.id)} />
+                                        </label>
+                                    </div>
+                                    <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
+                                    <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                                    </div>
+                                )}
+                                
                             </div>
                         ))}
                     </div>
@@ -193,11 +244,11 @@ export default function CoursePage(props: { course: Course}) {
                     )}
                 </div>
             )}
-            { filesInitialized && (
+            { !filesInitialized && (
                 <div className="border-[1px] border-slate-300 rounded-md w-[100%] min-h-[500px] p-8 mt-8">
                     <h3 className="text-2xl font-medium mb-8">Related Files</h3>
                     <div>
-                        {files.map((file: File) => (
+                        {files && files.map((file: File) => (
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={file.id}>
                                 <div className="flex justify-between">
                                 {/* <p className="mb-1 text-slate-800 font-semibold">{file.user.email}</p> */}
