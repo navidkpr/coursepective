@@ -54,7 +54,7 @@ export class ReviewsService {
 
   async updateReviewEmailsForUser(reviews: Review[], user: User = null) {
 
-    const anonymous = { "email": "Anonymous" };
+    const anonymous = { "email": "Anonymous", "profilePictureUrl": "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg" };
     let reviewsWithEmails: any[] = reviews;
     if (!user) {
       reviewsWithEmails.forEach(review => review.user = anonymous)

@@ -38,7 +38,7 @@ export class FilesService {
     }
 
     async updateFileEmailsForUser(files: File[], user: User) {
-        const anonymous = { "email": "Anonymous" };
+        const anonymous = { "email": "Anonymous", "profilePictureUrl": "https://t4.ftcdn.net/jpg/00/64/67/63/360_F_64676383_LdbmhiNM6Ypzb3FM4PPuFP9rHe7ri8Ju.jpg" };
         let filesWithEmails: any[] = files;
         if (!user) {
             filesWithEmails.forEach(review => review.user = anonymous)
