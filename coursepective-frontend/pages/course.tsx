@@ -22,16 +22,14 @@ export default function CoursePage(props: { course: Course}) {
     const [filename, setFilename] = useState("");
     const [fileError, setFileError] = useState("");
     const [reviewError, setReviewError] = useState("");
-    const [preChecked, setPreChecked] = useState(new Map)
+    const [checked, setChecked] = useState(new Map)
 
     async function updateReviews() {
         console.log("in updateReviews")
         const reviewService = new ReviewService()
         const userEmail = user? user.email : undefined
         const fetchedReviews: Review[] = await reviewService.getCourseReviews(course.id, userEmail)
-        const checked = alreadyUseful(fetchedReviews, userEmail)
         setReviews(fetchedReviews)
-        setPreChecked(checked)
         setReviewsInitialized(true)
     }
 
@@ -43,8 +41,17 @@ export default function CoursePage(props: { course: Course}) {
         setFilesInitialized(true)
     }
 
+    async function prepopulateUsefulReviews() {
+        const reviewService = new ReviewService()
+        const userEmail = user? user.email : undefined
+        const fetchedReviews: Review[] = await reviewService.getCourseReviews(course.id, userEmail)
+        const checked_state = alreadyUseful(fetchedReviews, userEmail)
+        setChecked(checked_state)
+    }
+
     useEffect(() => {
         updateReviews()
+        prepopulateUsefulReviews()
         updateFiles()
     }, [user])
 
@@ -78,8 +85,8 @@ export default function CoursePage(props: { course: Course}) {
 
     }
 
-    function preCheck(id: string){
-        if (preChecked.get(id) === true){
+    function isChecked(id: string){
+        if (checked.get(id) === true){
             return true
         }
         else {
@@ -91,10 +98,11 @@ export default function CoursePage(props: { course: Course}) {
         if (!user) {
             return
         }
-        const checked = e.target.checked
+        const checked_state = e.target.checked
         const userEmail = user.email
         const reviewService = new ReviewService()
-        await reviewService.putReviewUseful(rID, userEmail as string, checked)
+        setChecked(new Map(checked.set(rID,checked_state)))
+        await reviewService.putReviewUseful(rID, userEmail as string, checked_state)
         await updateReviews();
     }
     const uploadToClient = (event: any) => {
@@ -152,7 +160,7 @@ export default function CoursePage(props: { course: Course}) {
                                 <div className="">
                                     <label className="space-x-2 cursor-pointer">
                                         <span className="label-text text-slate-800 align-middle">Was this review useful?</span> 
-                                        <input type="checkbox" className="checkbox checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} checked={preCheck(review.id)} />
+                                        <input type="checkbox" className="checkbox checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} checked={isChecked(review.id)} />
                                     </label>
                                 </div>
                                 <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
