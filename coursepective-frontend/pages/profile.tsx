@@ -106,7 +106,7 @@ export default function Profile(props: { user: User}) {
 
         var config = {
             method: 'post',
-            url: `http://localhost:8000/users/${user.email}/profile_picture`,
+            url: `http://localhost:8000/users/${profileUser.email}/profile_picture`,
             headers: { 
                 'Content-Type': 'multipart/form-data'
             },
@@ -126,7 +126,7 @@ export default function Profile(props: { user: User}) {
         <body className="bg-gray-300 antialiased">
             <div className="container mx-0 my-60 w-[100%] p-4">
                 <div>
-                    {profileUser.email === user.email && 
+                    {(profileUser.email === user.email || areFriends) && 
                         <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
                             <div className="flex justify-center">
                                     <img src={profileUser.profilePictureUrl} alt={user.name} className="rounded-full mx-auto object-cover absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110"/>

@@ -55,7 +55,7 @@ export default function CoursePage(props: { course: Course}) {
         setEditReviewInitialized(false)
         updateReviews()
     }
-    
+
     async function prepopulateUsefulReviews() {
         const reviewService = new ReviewService()
         const userEmail = user? user.email : undefined
@@ -254,7 +254,7 @@ export default function CoursePage(props: { course: Course}) {
                     )}
                 </div>
             )}
-            { !filesInitialized && (
+            { filesInitialized && (
                 <div className="border-[1px] border-slate-300 rounded-md w-[100%] min-h-[500px] p-8 mt-8">
                     <h3 className="text-2xl font-medium mb-8">Related Files</h3>
                     <div>

@@ -67,10 +67,9 @@ export class ReviewsController {
 
   @Get('/useful/:email')
   async findUsefulByEmail(@Param('email') email: string) {
-    console.log('finding useful reviews by email')
     const user = await this.usersService.findOneByEmail(email)
-    console.log('after finding user')
-    return this.reviewsService.findUsefulByUser(user)
+    const reviews = await this.reviewsService.findUsefulByUser(user)
+    return this.reviewsService.updateReviewEmailsForUser(reviews, user)
   }
 
   @Get('/course/:id')
