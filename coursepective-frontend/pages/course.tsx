@@ -7,6 +7,11 @@ import { UserProfile, useUser } from '@auth0/nextjs-auth0/client';
 import axios from "axios";
 import FileService, { File } from "../services/file.service";
 import { User } from "../services/users.service";
+
+import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm';
+
+
 export default function CoursePage(props: { course: Course}) {
 
     const { user } = useUser();
@@ -26,6 +31,7 @@ export default function CoursePage(props: { course: Course}) {
     const [reviewError, setReviewError] = useState("");
     const [editReviewInitialized, setEditReviewInitialized] = useState(false)
     const [checked, setChecked] = useState(new Map)
+    const [checkboxDisabled, setCheckboxDisabled] = useState(false)
 
     async function updateReviews() {
         console.log("in updateReviews")
@@ -34,6 +40,9 @@ export default function CoursePage(props: { course: Course}) {
         const fetchedReviews: Review[] = await reviewService.getCourseReviews(course.id, userEmail)
         setReviews(fetchedReviews)
         setReviewsInitialized(true)
+        if (!user){
+            setCheckboxDisabled(true)
+        }
     }
 
     async function updateFiles() {
@@ -118,12 +127,14 @@ export default function CoursePage(props: { course: Course}) {
         if (!user) {
             return
         }
+        setCheckboxDisabled(true)
         const checked_state = e.target.checked
         const userEmail = user.email
         const reviewService = new ReviewService()
         setChecked(new Map(checked.set(rID,checked_state)))
         await reviewService.putReviewUseful(rID, userEmail as string, checked_state)
         await updateReviews();
+        setCheckboxDisabled(false)
     }
     const uploadToClient = (event: any) => {
         if (event.target.files && event.target.files[0]) {
@@ -250,10 +261,11 @@ export default function CoursePage(props: { course: Course}) {
                                     <div className="">
                                         <label className="space-x-2 cursor-pointer">
                                             <span className="label-text text-slate-800 align-middle">Was this review useful?</span> 
-                                            <input type="checkbox" className="checkbox checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} checked={isChecked(review.id)} />
+                                            <input type="checkbox" className="checkbox checkbox-primary checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} disabled={checkboxDisabled} checked={isChecked(review.id)} />
                                         </label>
                                     </div>
-                                    <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
+                                    <p className="mb-1 text-slate-800">Comments:</p>
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-800">{review.comments}</ReactMarkdown>
                                     <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                                     </div>
                                 )}
