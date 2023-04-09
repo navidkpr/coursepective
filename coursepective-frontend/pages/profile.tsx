@@ -7,6 +7,9 @@ import ReviewService, { Review } from "../services/review.service";
 import UsersService, { User } from "../services/users.service";
 import course from './course';
 
+import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm';
+
 export default function Profile(props: { user: User}) {
 
     const profileUser = props.user
@@ -189,11 +192,15 @@ export default function Profile(props: { user: User}) {
                                     <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
                                     <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
                                     <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                    <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
                                     <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
                                     <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
                                     <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
-                                    <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
-                                    <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-800">{review.comments}</ReactMarkdown>
+                                    <p className="text-sm font-light text-slate-900 ">Posted: {review.timePosted}</p>
+                                    {review.timeEdited && (
+                                        <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
+                                    )}
                                     </div>
                                 ))}
                             </div>
@@ -209,10 +216,15 @@ export default function Profile(props: { user: User}) {
                                     <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
                                     <p className="mb-1 text-slate-800"> {review.user.email}</p>
                                     <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                    <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
                                     <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
-                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
-                                    <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
-                                    <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>                                    
+                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-800">{review.comments}</ReactMarkdown>
+                                    <p className="text-sm font-light text-slate-900 ">Posted: {review.timePosted}</p>
+                                    {review.timeEdited && (
+                                        <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
+                                    )}
                                     </div>
                                 ))}
                             </div>

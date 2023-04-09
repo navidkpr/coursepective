@@ -1,4 +1,5 @@
 export class CreateReviewDto {
+    professor: string
     teachingRating: number
     labRating: number
     testRating: number

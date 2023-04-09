@@ -9,6 +9,9 @@ export class Review {
     id: string
 
     @Column()
+    professor: string
+
+    @Column()
     teachingRating: number
 
     @Column()
@@ -32,4 +35,9 @@ export class Review {
 
     @Column()
     timePosted: Date
+
+    @Column({
+        nullable: true
+    })
+    timeEdited: Date
 }
