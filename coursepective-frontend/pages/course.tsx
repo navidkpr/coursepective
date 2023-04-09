@@ -23,6 +23,7 @@ export default function CoursePage(props: { course: Course}) {
     const [labRating, setLabRating] = useState(1)
     const [testRating, setTestRating] = useState(1)
     const [comments, setComments] = useState("")
+    const [professor, setProfessor] = useState("")
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
     const [filesInitialized, setFilesInitialized] = useState(false)
     const [uploadedFile, setUploadedFile] = useState(null);
@@ -53,11 +54,12 @@ export default function CoursePage(props: { course: Course}) {
         setFilesInitialized(true)
     }
 
-    async function enterEditMode(editTeachingRating: number, editLabRating: number, editTestRating: number, editComments: string){
+    async function enterEditMode(editTeachingRating: number, editLabRating: number, editTestRating: number, editComments: string, editProfessor: string){
         setTeachingRating(editTeachingRating)
         setLabRating(editLabRating)
         setTestRating(editTestRating)
         setComments(editComments)
+        setProfessor(editProfessor)
         setEditReviewInitialized(true)
     }
 
@@ -65,7 +67,7 @@ export default function CoursePage(props: { course: Course}) {
         const reviewService = new ReviewService()
         const userEmail = user? user.email : undefined
         if(teachingRating == 0) setTeachingRating(1)
-        await reviewService.editReview(course.id, teachingRating, labRating, testRating, userEmail, comments)
+        await reviewService.editReview(course.id, teachingRating, labRating, testRating, professor, userEmail, comments)
         setEditReviewInitialized(false)
         updateReviews()
     }
@@ -94,7 +96,7 @@ export default function CoursePage(props: { course: Course}) {
         const alreadyPosted: boolean = await reviewService.getUserCourseReview(course.id, user.email)
         console.log(alreadyPosted)
         if(!alreadyPosted){
-            await reviewService.postReview(course.id, teachingRating, labRating, testRating, user.email, comments)
+            await reviewService.postReview(course.id, teachingRating, labRating, testRating, professor, user.email, comments)
             updateReviews()
         }else{
             setReviewError("You have already posted a review for this course!")
@@ -192,7 +194,7 @@ export default function CoursePage(props: { course: Course}) {
                                     <button 
                                     className="flex bg-blue-600 hover:bg-blue-700 align-right rounded-md text-gray-50 p-4 active:scale-[98%]"
                                     type="submit"
-                                    onClick={() => enterEditMode(review.teachingRating, review.labRating, review.testRating, review.comments)}
+                                    onClick={() => enterEditMode(review.teachingRating, review.labRating, review.testRating, review.comments, review.professor)}
                                     >
                                         Edit
                                     </button>
@@ -238,6 +240,14 @@ export default function CoursePage(props: { course: Course}) {
                                                     </select>
                                                 </div>
                                             </div>
+                                            <div>
+                                                <label htmlFor="professor">Name of Professor: </label>
+                                                <input 
+                                                    type="input" 
+                                                    onChange={(evt: any) => setProfessor(evt.target.value as string)}
+                                                    value={professor}
+                                                />                                            
+                                            </div>
                                             <br></br>
                                             <label htmlFor="comments">Comments:</label>
                                             <br></br>
@@ -255,6 +265,7 @@ export default function CoursePage(props: { course: Course}) {
                                 {(!editReviewInitialized || (editReviewInitialized && user && user.email != review.user.email)) && (
                                     <div>
                                     <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                    <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
                                     <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
                                     <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
                                     <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
@@ -266,7 +277,10 @@ export default function CoursePage(props: { course: Course}) {
                                     </div>
                                     <p className="mb-1 text-slate-800">Comments:</p>
                                     <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-800">{review.comments}</ReactMarkdown>
-                                    <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
+                                    <p className="text-sm font-light text-slate-900 ">Posted: {review.timePosted}</p>
+                                    {review.timeEdited && (
+                                        <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
+                                    )}
                                     </div>
                                 )}
                                 </div>
@@ -314,6 +328,15 @@ export default function CoursePage(props: { course: Course}) {
                                         <option value="5">5</option>
                                         </select>
                                     </div>
+                                </div>
+                                <div>
+                                    <label htmlFor="professor">Name of Professor: </label>
+                                    <input 
+                                        type="input" 
+                                        onChange={(evt: any) => setProfessor(evt.target.value as string)}
+                                        value={professor}
+                                        placeholder="Charles Xavier" 
+                                    />                                            
                                 </div>
                                 <br></br>
                                 <label htmlFor="comments">Comments:</label>

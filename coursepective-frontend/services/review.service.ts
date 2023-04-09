@@ -11,7 +11,9 @@ export interface Review {
     testRating: number,
     id: string,
     timePosted: string,
+    timeEdited: string,
     comments: string,
+    professor: string,
     user: {
         email: string,
         profilePictureUrl: string,
@@ -39,6 +41,9 @@ class ReviewService {
         
         for(let i = 0; i < reviews.length; i++) {
             reviews[i].timePosted = moment(new Date(reviews[i].timePosted)).fromNow()
+            if(reviews[i].timeEdited){
+                reviews[i].timeEdited = moment(new Date(reviews[i].timeEdited)).fromNow()
+            }
         }
         
         return reviews
@@ -51,6 +56,9 @@ class ReviewService {
         reviews = response.data
         for(let i = 0; i < reviews.length; i++) {
             reviews[i].timePosted = moment(new Date(reviews[i].timePosted)).fromNow()
+            if(reviews[i].timeEdited){
+                reviews[i].timeEdited = moment(new Date(reviews[i].timeEdited)).fromNow()
+            }
         }
         return reviews
     }
@@ -63,11 +71,14 @@ class ReviewService {
         reviews = response.data
         for(let i = 0; i < reviews.length; i++) {
             reviews[i].timePosted = moment(new Date(reviews[i].timePosted)).fromNow()
+            if(reviews[i].timeEdited){
+                reviews[i].timeEdited = moment(new Date(reviews[i].timeEdited)).fromNow()
+            }
         }
         return reviews
     }
 
-    async postReview(courseId: string, teachingRating: number, labRating: number, testRating: number, userEmail: string, comments: string): Promise<boolean> {
+    async postReview(courseId: string, teachingRating: number, labRating: number, testRating: number, professor: string, userEmail: string, comments: string): Promise<boolean> {
         console.log("in postReview")
         try {
             const response = await axios.post(`${AppConfig.Backend.BaseUrl}/reviews`, {
@@ -76,7 +87,8 @@ class ReviewService {
                 testRating,
                 courseId,
                 userEmail,
-                comments
+                comments,
+                professor,
             })
             return true
         } catch (error) {
@@ -86,7 +98,7 @@ class ReviewService {
         }
     }
 
-    async editReview(courseId: string, teachingRating: number, labRating: number, testRating: number, userEmail: string, comments: string): Promise<boolean> {
+    async editReview(courseId: string, teachingRating: number, labRating: number, testRating: number, professor: string, userEmail: string,  comments: string): Promise<boolean> {
         console.log("in editReview")
         try {
             const response = await axios.patch(`${AppConfig.Backend.BaseUrl}/reviews`, {
@@ -95,7 +107,8 @@ class ReviewService {
                 testRating,
                 courseId,
                 userEmail,
-                comments
+                comments,
+                professor
             })
             return true
         } catch (error) {
