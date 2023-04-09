@@ -3,9 +3,12 @@ import moment from "moment";
 import AppConfig from "../config/app_config";
 
 import { UserProfile } from '@auth0/nextjs-auth0/client';
+import { test } from "node:test";
 
 export interface Review {
-    rating: number,
+    teachingRating: number,
+    labRating: number,
+    testRating: number,
     id: string,
     timePosted: string,
     comments: string,
@@ -64,35 +67,39 @@ class ReviewService {
         return reviews
     }
 
-    async postReview(courseId: string, rating: number, userEmail: string, comments: string): Promise<boolean> {
+    async postReview(courseId: string, teachingRating: number, labRating: number, testRating: number, userEmail: string, comments: string): Promise<boolean> {
         console.log("in postReview")
         try {
             const response = await axios.post(`${AppConfig.Backend.BaseUrl}/reviews`, {
-                rating,
+                teachingRating,
+                labRating,
+                testRating,
                 courseId,
                 userEmail,
                 comments
             })
             return true
         } catch (error) {
-            console.log(rating, courseId, userEmail, comments)
+            console.log(teachingRating, labRating, testRating, courseId, userEmail, comments)
             console.log(error)
             return false
         }
     }
 
-    async editReview(courseId: string, rating: number, userEmail: string, comments: string): Promise<boolean> {
+    async editReview(courseId: string, teachingRating: number, labRating: number, testRating: number, userEmail: string, comments: string): Promise<boolean> {
         console.log("in editReview")
         try {
             const response = await axios.patch(`${AppConfig.Backend.BaseUrl}/reviews`, {
-                rating,
+                teachingRating,
+                labRating,
+                testRating,
                 courseId,
                 userEmail,
                 comments
             })
             return true
         } catch (error) {
-            console.log(rating, courseId, userEmail, comments)
+            console.log(teachingRating, labRating, testRating, courseId, userEmail, comments)
             console.log(error)
             return false
         }

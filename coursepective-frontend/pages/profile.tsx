@@ -188,7 +188,9 @@ export default function Profile(props: { user: User}) {
                                 {reviews.map((review: Review) => (
                                     <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
                                     <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
-                                    <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                                    <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                    <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
+                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
                                     <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
                                     <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
                                     <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
@@ -206,8 +208,9 @@ export default function Profile(props: { user: User}) {
                                     <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
                                     <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
                                     <p className="mb-1 text-slate-800"> {review.user.email}</p>
-                                    <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
-                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                    <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                    <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
+                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
                                     <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
                                     <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                                     </div>

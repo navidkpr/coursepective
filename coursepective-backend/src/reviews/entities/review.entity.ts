@@ -9,7 +9,13 @@ export class Review {
     id: string
 
     @Column()
-    rating: number
+    teachingRating: number
+
+    @Column()
+    labRating: number
+
+    @Column()
+    testRating: number
 
     @Column({ default: "" })
     comments: string

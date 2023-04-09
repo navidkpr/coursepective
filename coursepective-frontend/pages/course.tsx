@@ -14,7 +14,9 @@ export default function CoursePage(props: { course: Course}) {
     const course = props.course
     const [reviews, setReviews] = useState([] as Review[])
     const [files, setFiles] = useState([] as File[])
-    const [rating, setRating] = useState(1)
+    const [teachingRating, setTeachingRating] = useState(1)
+    const [labRating, setLabRating] = useState(1)
+    const [testRating, setTestRating] = useState(1)
     const [comments, setComments] = useState("")
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
     const [filesInitialized, setFilesInitialized] = useState(false)
@@ -43,7 +45,9 @@ export default function CoursePage(props: { course: Course}) {
     }
 
     async function enterEditMode(){
-        setRating(0)
+        setTeachingRating(0)
+        setLabRating(0)
+        setTestRating(0)
         setComments("")
         setEditReviewInitialized(true)
     }
@@ -51,7 +55,7 @@ export default function CoursePage(props: { course: Course}) {
     async function editReview() {
         const reviewService = new ReviewService()
         const userEmail = user? user.email : undefined
-        await reviewService.editReview(course.id, rating, userEmail, comments)
+        await reviewService.editReview(course.id, teachingRating, testRating, labRating, userEmail, comments)
         setEditReviewInitialized(false)
         updateReviews()
     }
@@ -80,7 +84,7 @@ export default function CoursePage(props: { course: Course}) {
         const alreadyPosted: boolean = await reviewService.getUserCourseReview(course.id, user.email)
         console.log(alreadyPosted)
         if(!alreadyPosted){
-            await reviewService.postReview(course.id, rating, user.email, comments)
+            await reviewService.postReview(course.id, teachingRating, labRating, testRating, user.email, comments)
             updateReviews()
         }else{
             setReviewError("You have already posted a review for this course!")
@@ -183,29 +187,64 @@ export default function CoursePage(props: { course: Course}) {
                                 )}
                                 {user && user.email === review.user.email && editReviewInitialized && (
                                     <div>
-                                        <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={(rating == 0)? review.rating : rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
-                                        <option value="1">1</option>
-                                        <option value="2">2</option>
-                                        <option value="3">3</option>
-                                        <option value="4">4</option>
-                                        <option value="5">5</option>
-                                        </select>
-                                        <br></br>
-                                        <label htmlFor="comments">Comments:</label>
-                                        <br></br>
-                                        <textarea rows={5} cols={100} maxLength={244} value={(comments == "")? review.comments : comments} id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
-                                        <br></br>
-                                        <button 
-                                            className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
-                                            onClick={editReview}
-                                        >
-                                            Update Review
-                                        </button>
+                                        <div>
+                                            <div className="flex">
+                                                <div>
+                                                    <h5 className="mb-2 text-md">Teaching Quality: </h5>
+                                                </div>
+                                                <div>
+                                                    <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={(teachingRating == 0)? review.teachingRating : teachingRating} onChange={(evt: any) => setTeachingRating(evt.target.value as number)}>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <h5 className="mb-2 text-md">Lab Difficulty: </h5>
+                                                </div>
+                                                <div>
+                                                    <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={(labRating == 0)? review.labRating : labRating} onChange={(evt: any) => setLabRating(evt.target.value as number)}>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <h5 className="mb-2 text-md">Test Difficulty: </h5>
+                                                </div>
+                                                <div>
+                                                    <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={(testRating == 0)? review.testRating : testRating} onChange={(evt: any) => setTestRating(evt.target.value as number)}>
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <br></br>
+                                            <label htmlFor="comments">Comments:</label>
+                                            <br></br>
+                                            <textarea rows={5} cols={100} maxLength={244} value={(comments == "")? review.comments : comments} id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
+                                            <br></br>
+                                            <button 
+                                                className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                                onClick={editReview}
+                                            >
+                                                Update Review
+                                            </button>
+                                        </div>
                                     </div>
                                 )}
                                 {(!editReviewInitialized || (editReviewInitialized && user && user.email != review.user.email)) && (
                                     <div>
-                                    <p className="mb-1 text-slate-800">Rating: {review.rating}</p>
+                                    <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                    <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
+                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
                                     <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
                                     <div className="">
                                         <label className="space-x-2 cursor-pointer">
@@ -225,13 +264,44 @@ export default function CoursePage(props: { course: Course}) {
                         <div className="mt-8 flex-col min-w-[300px]">
                             <form>
                                 <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
-                                <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={rating} onChange={(evt: any) => setRating(evt.target.value as number)}>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                    <option value="3">3</option>
-                                    <option value="4">4</option>
-                                    <option value="5">5</option>
-                                </select>
+                                <div className="flex">
+                                    <div>
+                                        <h5 className="mb-2 text-md">Teaching Quality: </h5>
+                                    </div>
+                                    <div>
+                                        <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={teachingRating} onChange={(evt: any) => setTeachingRating(evt.target.value as number)}>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <h5 className="mb-2 text-md">Lab Difficulty: </h5>
+                                    </div>
+                                    <div>
+                                        <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={labRating} onChange={(evt: any) => setLabRating(evt.target.value as number)}>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <h5 className="mb-2 text-md">Test Difficulty: </h5>
+                                    </div>
+                                    <div>
+                                        <select placeholder='rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={testRating} onChange={(evt: any) => setTestRating(evt.target.value as number)}>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        </select>
+                                    </div>
+                                </div>
                                 <br></br>
                                 <label htmlFor="comments">Comments:</label>
                                 <br></br>

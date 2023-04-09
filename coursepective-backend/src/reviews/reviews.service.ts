@@ -18,7 +18,7 @@ export class ReviewsService {
 
   async create(createReviewDto: CreateReviewDto) {
     const user = await this.usersService.findOneByEmailOrCreate(createReviewDto.userEmail)
-    this.reviewRepository.insert({ rating: createReviewDto.rating, course: { id: createReviewDto.courseId }, timePosted: new Date(), user: user, comments: createReviewDto.comments })
+    this.reviewRepository.insert({ teachingRating: createReviewDto.teachingRating, labRating: createReviewDto.labRating, testRating: createReviewDto.testRating, course: { id: createReviewDto.courseId }, timePosted: new Date(), user: user, comments: createReviewDto.comments })
   }
 
   findAll() {
@@ -104,7 +104,7 @@ export class ReviewsService {
     console.log("in update review service")
     const user = await this.usersService.findOneByEmailOrCreate(updateReviewDto.userEmail)
     const review = await this.getUserCourseReview(updateReviewDto.courseId, user)
-    return this.reviewRepository.save( {id: review.id, rating: updateReviewDto.rating, course: { id: updateReviewDto.courseId }, timePosted: new Date(), user: user, comments: updateReviewDto.comments })
+    return this.reviewRepository.save( {id: review.id, teachingRating: updateReviewDto.teachingRating, labRating: updateReviewDto.labRating, testRating: updateReviewDto.testRating, course: { id: updateReviewDto.courseId }, timePosted: new Date(), user: user, comments: updateReviewDto.comments })
   }
 
   remove(id: number) {
