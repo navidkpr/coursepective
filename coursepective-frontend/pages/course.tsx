@@ -7,6 +7,11 @@ import { UserProfile, useUser } from '@auth0/nextjs-auth0/client';
 import axios from "axios";
 import FileService, { File } from "../services/file.service";
 import { User } from "../services/users.service";
+
+import ReactMarkdown from "react-markdown";
+import remarkGfm from 'remark-gfm';
+
+
 export default function CoursePage(props: { course: Course}) {
 
     const { user } = useUser();
@@ -259,7 +264,8 @@ export default function CoursePage(props: { course: Course}) {
                                             <input type="checkbox" className="checkbox checkbox-primary checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} disabled={checkboxDisabled} checked={isChecked(review.id)} />
                                         </label>
                                     </div>
-                                    <p className="mb-1 text-slate-800">Comments: {review.comments}</p>
+                                    <p className="mb-1 text-slate-800">Comments:</p>
+                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-800">{review.comments}</ReactMarkdown>
                                     <p className="text-sm font-light text-slate-900 ">{review.timePosted}</p>
                                     </div>
                                 )}
