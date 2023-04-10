@@ -277,7 +277,7 @@ export default function CoursePage(props: { course: Course}) {
                                 )}
                                 </div>
                                 
-                                { (!user || user.email != review.user.email) && 
+                                { (!user || user.email != review.user.email || !editReviewInitialized) && 
                                     <div className="w-[100%] flex flex-col justify-between">
                                         <div className="grid grid-cols-3">
                                             <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
