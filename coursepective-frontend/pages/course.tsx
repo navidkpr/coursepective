@@ -186,7 +186,7 @@ export default function CoursePage(props: { course: Course}) {
                     <h3 className="text-2xl font-medium mb-8">Reviews</h3>
                     <div>
                         {reviews.map((review: Review) => (
-                            <div className="bg-slate-400 rounded-md p-4 mb-4 flex gap-4" key={review.id}>
+                            <div className="bg-slate-400 text-slate-800 rounded-md p-4 mb-4 flex gap-4" key={review.id}>
                                 <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
                                 <div>
                                 <p className="mb-1 text-slate-800 font-semibold">{review.user.email}</p>
@@ -216,7 +216,7 @@ export default function CoursePage(props: { course: Course}) {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <h5 className="mb-2 text-md">Lab Difficulty: </h5>
+                                                    <h5 className="mb-2 text-md text-">Lab Difficulty: </h5>
                                                 </div>
                                                 <div>
                                                     <select placeholder='lab rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={labRating} onChange={(evt: any) => setLabRating(evt.target.value as number)}>
@@ -228,7 +228,7 @@ export default function CoursePage(props: { course: Course}) {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <h5 className="mb-2 text-md">Test Difficulty: </h5>
+                                                    <h5 className="mb-2 text-md text-slate-800">Test Difficulty: </h5>
                                                 </div>
                                                 <div>
                                                     <select placeholder='test rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={testRating} onChange={(evt: any) => setTestRating(evt.target.value as number)}>
