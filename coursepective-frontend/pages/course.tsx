@@ -264,10 +264,8 @@ export default function CoursePage(props: { course: Course}) {
                                 )}
                                 {(!editReviewInitialized || (editReviewInitialized && user && user.email != review.user.email)) && (
                                     <div>
-                                    <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                    
                                     <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
-                                    <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
-                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
                                     <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
                                     <div className="">
                                         <label className="space-x-2 cursor-pointer">
@@ -275,15 +273,28 @@ export default function CoursePage(props: { course: Course}) {
                                             <input type="checkbox" className="checkbox checkbox-primary checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} disabled={checkboxDisabled} checked={isChecked(review.id)} />
                                         </label>
                                     </div>
-                                    <p className="mb-1 text-slate-800">Comments:</p>
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-800">{review.comments}</ReactMarkdown>
-                                    <p className="text-sm font-light text-slate-900 ">Posted: {review.timePosted}</p>
-                                    {review.timeEdited && (
-                                        <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
-                                    )}
                                     </div>
                                 )}
                                 </div>
+                                
+                                { (!user || user.email != review.user.email) && 
+                                    <div className="w-[100%] flex flex-col justify-between">
+                                        <div className="grid grid-cols-3">
+                                            <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
+                                            <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
+                                            <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                        </div>
+                                        <div className="flex p-4 text-lg bg-slate-600 rounded-md">
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-white-800">{review.comments}</ReactMarkdown>
+                                        </div>
+                                        <div className="flex w-[100%] justify-end items-end">
+                                            <p className="text-sm font-light text-slate-900 mr-4">Posted: {review.timePosted}</p>
+                                            {review.timeEdited && (
+                                                <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
+                                            )}
+                                        </div>
+                                    </div>
+                                }
                             </div>
                         ))}
                     </div>
@@ -366,6 +377,7 @@ export default function CoursePage(props: { course: Course}) {
                     <div>
                         {(files instanceof Array) && files.map((file: File) => (
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={file.id}>
+                                <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
                                 <div className="flex justify-between">
                                 {/* <p className="mb-1 text-slate-800 font-semibold">{file.user.email}</p> */}
                                     <div>
