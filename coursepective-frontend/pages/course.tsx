@@ -189,7 +189,7 @@ export default function CoursePage(props: { course: Course}) {
                             <div className="bg-slate-400 text-slate-800 rounded-md p-4 mb-4 flex gap-4" key={review.id}>
                                 <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
                                 <div>
-                                <p className="mb-1 text-slate-800 font-semibold">{review.user.email}</p>
+                                <p className="mb-1 font-semibold">{review.user.email}</p>
                                 {user && user.email === review.user.email && !editReviewInitialized && (
                                     <button 
                                     className="flex bg-blue-600 hover:bg-blue-700 align-right rounded-md text-gray-50 p-4 active:scale-[98%]"
@@ -204,7 +204,7 @@ export default function CoursePage(props: { course: Course}) {
                                         <div>
                                             <div className="flex">
                                                 <div>
-                                                    <h5 className="mb-2 text-md">Teaching Quality: </h5>
+                                                    <h5 className="mb-2 text-md text-slate-800">Teaching Quality: </h5>
                                                 </div>
                                                 <div>
                                                     <select placeholder='teaching rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={teachingRating} onChange={(evt: any) => setTeachingRating(evt.target.value as number)}>
@@ -216,7 +216,7 @@ export default function CoursePage(props: { course: Course}) {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <h5 className="mb-2 text-md text-">Lab Difficulty: </h5>
+                                                    <h5 className="mb-2 text-md text-slate-800">Lab Difficulty: </h5>
                                                 </div>
                                                 <div>
                                                     <select placeholder='lab rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={labRating} onChange={(evt: any) => setLabRating(evt.target.value as number)}>
