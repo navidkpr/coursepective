@@ -187,27 +187,35 @@ export default function CoursePage(props: { course: Course}) {
                     <div>
                         {reviews.map((review: Review) => (
                             <div className="bg-slate-400 text-slate-800 rounded-md p-4 mb-4 flex gap-4" key={review.id}>
-                                <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
+                                <div className="flex flex-col justify-between">
+                                    <div>
+                                    <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
+                                    </div>
+                                    <div className="w-12">
+                                    {user && user.email === review.user.email && !editReviewInitialized && (
+                                        <button 
+                                        // className="btn-primary btn-md flex bg-blue-600 hover:bg-blue-700 align-right rounded-md text-gray-50 p-4 active:scale-[98%]"
+                                        className="btn btn-primary btn-sm" 
+                                        type="submit"
+                                        onClick={() => enterEditMode(review.teachingRating, review.labRating, review.testRating, review.comments, review.professor)}
+                                        >
+                                            Edit
+                                        </button>
+                                    )}
+                                    </div>
+                                </div>
                                 <div>
                                 <p className="mb-1 font-semibold">{review.user.email}</p>
-                                {user && user.email === review.user.email && !editReviewInitialized && (
-                                    <button 
-                                    className="flex bg-blue-600 hover:bg-blue-700 align-right rounded-md text-gray-50 p-4 active:scale-[98%]"
-                                    type="submit"
-                                    onClick={() => enterEditMode(review.teachingRating, review.labRating, review.testRating, review.comments, review.professor)}
-                                    >
-                                        Edit
-                                    </button>
-                                )}
+                                
                                 {user && user.email === review.user.email && editReviewInitialized && (
                                     <div>
                                         <div>
-                                            <div className="flex">
+                                            <div className="flex align-middle">
                                                 <div>
-                                                    <h5 className="mb-2 text-md text-slate-800">Teaching Quality: </h5>
+                                                    <h5 className="mb-2 mr-1 text-md text-slate-800">Teaching Quality: </h5>
                                                 </div>
                                                 <div>
-                                                    <select placeholder='teaching rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={teachingRating} onChange={(evt: any) => setTeachingRating(evt.target.value as number)}>
+                                                    <select placeholder='teaching rating' className="select bg-primary select-sm mb-4 mr-4 text-slate-300" value={teachingRating} onChange={(evt: any) => setTeachingRating(evt.target.value as number)}>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -216,10 +224,10 @@ export default function CoursePage(props: { course: Course}) {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <h5 className="mb-2 text-md text-slate-800">Lab Difficulty: </h5>
+                                                    <h5 className="mb-2 mr-1 text-md text-slate-800">Lab Difficulty: </h5>
                                                 </div>
                                                 <div>
-                                                    <select placeholder='lab rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={labRating} onChange={(evt: any) => setLabRating(evt.target.value as number)}>
+                                                    <select placeholder='lab rating' className="select bg-primary select-sm mb-4 mr-4 text-slate-300" value={labRating} onChange={(evt: any) => setLabRating(evt.target.value as number)}>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -228,10 +236,10 @@ export default function CoursePage(props: { course: Course}) {
                                                     </select>
                                                 </div>
                                                 <div>
-                                                    <h5 className="mb-2 text-md text-slate-800">Test Difficulty: </h5>
+                                                    <h5 className="mb-2 mr-1 text-md text-slate-800">Test Difficulty: </h5>
                                                 </div>
                                                 <div>
-                                                    <select placeholder='test rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={testRating} onChange={(evt: any) => setTestRating(evt.target.value as number)}>
+                                                    <select placeholder='test rating' className="select bg-primary select-sm mb-4 mr-4 text-slate-300" value={testRating} onChange={(evt: any) => setTestRating(evt.target.value as number)}>
                                                     <option value="1">1</option>
                                                     <option value="2">2</option>
                                                     <option value="3">3</option>
@@ -243,7 +251,8 @@ export default function CoursePage(props: { course: Course}) {
                                             <div>
                                                 <label htmlFor="professor">Name of Professor: </label>
                                                 <input 
-                                                    type="input" 
+                                                    type="input"
+                                                    className="input input-primary input-bordered input-sm text-slate-300"
                                                     onChange={(evt: any) => setProfessor(evt.target.value as string)}
                                                     value={professor}
                                                 />                                            
@@ -251,7 +260,7 @@ export default function CoursePage(props: { course: Course}) {
                                             <br></br>
                                             <label htmlFor="comments">Comments:</label>
                                             <br></br>
-                                            <textarea rows={5} cols={100} maxLength={244} value={comments} id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
+                                            <textarea className="textarea textarea-primary textarea-bordered text-slate-300" rows={5} cols={100} maxLength={244} value={comments} id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
                                             <br></br>
                                             <button 
                                                 className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
@@ -262,6 +271,7 @@ export default function CoursePage(props: { course: Course}) {
                                         </div>
                                     </div>
                                 )}
+                                
                                 {(!editReviewInitialized || (editReviewInitialized && user && user.email != review.user.email)) && (
                                     <div>
                                     
@@ -269,23 +279,24 @@ export default function CoursePage(props: { course: Course}) {
                                     <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
                                     <div className="">
                                         <label className="space-x-2 cursor-pointer">
-                                            <span className="label-text text-slate-800 align-middle">Was this review useful?</span> 
+                                            <span className="label-text text-slate-800 align-middle">Useful?</span> 
                                             <input type="checkbox" className="checkbox checkbox-primary checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} disabled={checkboxDisabled} checked={isChecked(review.id)} />
                                         </label>
                                     </div>
                                     </div>
                                 )}
+                                
                                 </div>
                                 
                                 { (!user || user.email != review.user.email || !editReviewInitialized) && 
-                                    <div className="w-[100%] flex flex-col justify-between">
+                                    <div className="flex flex-col flex-grow justify-between">
                                         <div className="grid grid-cols-3">
                                             <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
                                             <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
                                             <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
                                         </div>
                                         <div className="flex p-4 text-lg bg-slate-600 rounded-md">
-                                            <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-white-800">{review.comments}</ReactMarkdown>
+                                            <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-300">{review.comments}</ReactMarkdown>
                                         </div>
                                         <div className="flex w-[100%] justify-end items-end">
                                             <p className="text-sm font-light text-slate-900 mr-4">Posted: {review.timePosted}</p>
@@ -304,10 +315,10 @@ export default function CoursePage(props: { course: Course}) {
                                 <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
                                 <div className="flex">
                                     <div>
-                                        <h5 className="mb-2 text-md">Teaching Quality: </h5>
+                                        <h5 className="mb-2 mr-1 text-md">Teaching Quality: </h5>
                                     </div>
                                     <div>
-                                        <select placeholder='teaching rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={teachingRating} onChange={(evt: any) => setTeachingRating(evt.target.value as number)}>
+                                        <select placeholder='teaching rating' className="select select-primary select-sm mb-4 mr-4" value={teachingRating} onChange={(evt: any) => setTeachingRating(evt.target.value as number)}>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -316,10 +327,10 @@ export default function CoursePage(props: { course: Course}) {
                                         </select>
                                     </div>
                                     <div>
-                                        <h5 className="mb-2 text-md">Lab Difficulty: </h5>
+                                        <h5 className="mb-2 mr-1 text-md">Lab Difficulty: </h5>
                                     </div>
                                     <div>
-                                        <select placeholder='lab rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={labRating} onChange={(evt: any) => setLabRating(evt.target.value as number)}>
+                                        <select placeholder='lab rating' className="select select-primary select-sm mb-4 mr-4" value={labRating} onChange={(evt: any) => setLabRating(evt.target.value as number)}>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -328,10 +339,10 @@ export default function CoursePage(props: { course: Course}) {
                                         </select>
                                     </div>
                                     <div>
-                                        <h5 className="mb-2 text-md">Test Difficulty: </h5>
+                                        <h5 className="mb-2 mr-1 text-md">Test Difficulty: </h5>
                                     </div>
                                     <div>
-                                        <select placeholder='test rating' className="bg-gray-100 p-4 rounded-md mb-4 mr-4" value={testRating} onChange={(evt: any) => setTestRating(evt.target.value as number)}>
+                                        <select placeholder='test rating' className="select select-primary select-sm mb-4 mr-4" value={testRating} onChange={(evt: any) => setTestRating(evt.target.value as number)}>
                                         <option value="1">1</option>
                                         <option value="2">2</option>
                                         <option value="3">3</option>
@@ -344,15 +355,16 @@ export default function CoursePage(props: { course: Course}) {
                                     <label htmlFor="professor">Name of Professor: </label>
                                     <input 
                                         type="input" 
+                                        className="input input-primary input-bordered input-sm"
                                         onChange={(evt: any) => setProfessor(evt.target.value as string)}
                                         value={professor}
-                                        placeholder="Charles Xavier" 
+                                        placeholder="Professor X" 
                                     />                                            
                                 </div>
                                 <br></br>
                                 <label htmlFor="comments">Comments:</label>
                                 <br></br>
-                                <textarea rows={5} cols={100} maxLength={244} placeholder=" This course saved my life because..." id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
+                                <textarea className="textarea textarea-primary textarea-bordered" rows={5} cols={100} maxLength={244} placeholder=" You have the power of Markdown and 244 characters: GO" id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
                                 <br></br>
                                 <button 
                                     className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
