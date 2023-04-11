@@ -22,6 +22,7 @@ const Search: React.FC<ISearch> = () => {
         router.push(`/results?search=${searchTerm}`);
       }}
     >
+      <h1 className="text-7xl flex font-bold">Coursepective</h1>
       <input
         type="text"
         placeholder="Search for a course..." 

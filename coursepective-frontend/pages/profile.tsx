@@ -125,14 +125,14 @@ export default function Profile(props: { user: User}) {
     };
 
     return (
-        <html>
-        <body className="bg-gray-300 antialiased">
+        <>
+        <div className="bg-slate-400 rounded-lg">
             <div className="container mx-0 my-60 w-[100%] p-4">
                 <div>
                     {(profileUser.email === user.email || areFriends) && 
-                        <div className="bg-white relative shadow rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
+                        <div className="relative rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
                             <div className="flex justify-center">
-                                    <img src={profileUser.profilePictureUrl} alt={user.name} className="rounded-full mx-auto object-cover absolute -top-20 w-32 h-32 shadow-md border-4 border-white transition duration-200 transform hover:scale-110"/>
+                                    <img src={profileUser.profilePictureUrl} alt={user.name} className="rounded-full mx-auto object-cover absolute -top-20 w-32 h-32 shadow-md transition duration-200 transform hover:scale-110"/>
                             </div>
                             
                             <div className="mt-16">
@@ -176,8 +176,8 @@ export default function Profile(props: { user: User}) {
                             <h3 className="collapse-title text-xl font-medium">Friends</h3>
                             <div className='collapse-content'>
                                 {friends.map((user: User) => (
-                                    <div className="bg-slate-400 rounded-md p-1 mb-1" key={user.email}>
-                                        <a href={`/profile?email=${user.email}`} className="btn btn-ghost normal-case text-m">{user.email}</a>
+                                    <div className="bg-slate-400 text-slate-800 rounded-md p-1 mb-1" key={user.email}>
+                                        <a href={`/profile?email=${user.email}`} className="btn btn-ghost bg-slate-400 shadow-lg normal-case text-m">{user.email}</a>
                                     </div>
                                 ))}
                             </div>
@@ -191,7 +191,7 @@ export default function Profile(props: { user: User}) {
                                 {reviews.map((review: Review) => (
                                     <div>              
                                     <div className="bg-slate-400 text-slate-800 rounded-md p-4 mb-4 gap-4" key={review.id}>
-                                        <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                                        <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost shadow normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
                                         <div className="flex p-4 mb-4 gap-4">
                                             <div className="flex flex-col justify-between">
                                                 <div>
@@ -234,7 +234,7 @@ export default function Profile(props: { user: User}) {
                                 {usefulReviews.map((review: Review) => (
                                     <div>              
                                     <div className="bg-slate-400 text-slate-800 rounded-md p-4 mb-4 gap-4" key={review.id}>
-                                        <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                                        <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost shadow normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
                                         <div className="flex p-4 mb-4 gap-4">
                                             <div className="flex flex-col justify-between">
                                                 <div>
@@ -271,8 +271,8 @@ export default function Profile(props: { user: User}) {
                     )}
                 </div>
             </div>
-        </body>
-        </html>
+        </div>
+        </>
     );
 };
 
