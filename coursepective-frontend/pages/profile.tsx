@@ -189,18 +189,38 @@ export default function Profile(props: { user: User}) {
                             <h3 className="collapse-title text-xl font-medium">Reviews</h3>
                             <div className="collapse-content">
                                 {reviews.map((review: Review) => (
-                                    <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
-                                    <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
-                                    <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
-                                    <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
-                                    <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
-                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
-                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-800">{review.comments}</ReactMarkdown>
-                                    <p className="text-sm font-light text-slate-900 ">Posted: {review.timePosted}</p>
-                                    {review.timeEdited && (
-                                        <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
-                                    )}
+                                    <div>              
+                                    <div className="bg-slate-400 text-slate-800 rounded-md p-4 mb-4 gap-4" key={review.id}>
+                                        <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                                        <div className="flex p-4 mb-4 gap-4">
+                                            <div className="flex flex-col justify-between">
+                                                <div>
+                                                <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
+                                                </div>
+                                            <p className="mb-1 font-semibold text-slate-800"> {review.user.email}</p>
+                                            <div>
+                                            <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
+                                            <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                            </div>
+                                            </div>
+                                            <div className="flex flex-col flex-grow justify-between">
+                                                <div className="grid grid-cols-3">
+                                                    <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
+                                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
+                                                    <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                                </div>
+                                                <div className="flex p-4 text-lg bg-slate-600 rounded-md">
+                                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-300">{review.comments}</ReactMarkdown>
+                                                </div>
+                                                <div className="flex w-[100%] justify-end items-end">
+                                                    <p className="text-sm font-light text-slate-900 mr-4">Posted: {review.timePosted}</p>
+                                                    {review.timeEdited && (
+                                                        <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     </div>
                                 ))}
                             </div>
@@ -212,19 +232,38 @@ export default function Profile(props: { user: User}) {
                             <h3 className="collapse-title text-xl font-medium">Useful Reviews</h3>
                             <div className="collapse-content">
                                 {usefulReviews.map((review: Review) => (
-                                    <div className="bg-slate-400 rounded-md p-4 mb-4" key={review.id}>
-                                    <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
-                                    <p className="mb-1 text-slate-800"> {review.user.email}</p>
-                                    <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
-                                    <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
-                                    <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
-                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>                                    
-                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
-                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-800">{review.comments}</ReactMarkdown>
-                                    <p className="text-sm font-light text-slate-900 ">Posted: {review.timePosted}</p>
-                                    {review.timeEdited && (
-                                        <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
-                                    )}
+                                    <div>              
+                                    <div className="bg-slate-400 text-slate-800 rounded-md p-4 mb-4 gap-4" key={review.id}>
+                                        <Link href={`/course?code=${review.course.courseCode}`} className="btn btn-ghost normal-case text-xl">{review.course.courseCode} : {review.course.name}</Link>
+                                        <div className="flex p-4 mb-4 gap-4">
+                                            <div className="flex flex-col justify-between">
+                                                <div>
+                                                <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
+                                                </div>
+                                            <p className="mb-1 font-semibold text-slate-800"> {review.user.email}</p>
+                                            <div>
+                                            <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
+                                            <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                            </div>
+                                            </div>
+                                            <div className="flex flex-col flex-grow justify-between">
+                                                <div className="grid grid-cols-3">
+                                                    <p className="mb-1 text-slate-800">Lab Difficulty: {review.labRating}</p>
+                                                    <p className="mb-1 text-slate-800">Test Difficulty: {review.testRating}</p>
+                                                    <p className="mb-1 text-slate-800">Teaching Quality: {review.teachingRating}</p>
+                                                </div>
+                                                <div className="flex p-4 text-lg bg-slate-600 rounded-md">
+                                                    <ReactMarkdown remarkPlugins={[remarkGfm]} className="mb-1 text-slate-300">{review.comments}</ReactMarkdown>
+                                                </div>
+                                                <div className="flex w-[100%] justify-end items-end">
+                                                    <p className="text-sm font-light text-slate-900 mr-4">Posted: {review.timePosted}</p>
+                                                    {review.timeEdited && (
+                                                        <p className="text-sm font-light text-slate-900 ">Edited: {review.timeEdited}</p>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     </div>
                                 ))}
                             </div>

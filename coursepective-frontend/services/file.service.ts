@@ -7,7 +7,9 @@ export interface File {
     id: string,
     timePosted: string,
     location: string,
+    name: string,
     user: {
+        profilePictureUrl: string,
         email: string,
     }
 }

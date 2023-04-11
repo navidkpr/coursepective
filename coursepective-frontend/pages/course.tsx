@@ -43,6 +43,8 @@ export default function CoursePage(props: { course: Course}) {
         setReviewsInitialized(true)
         if (!user){
             setCheckboxDisabled(true)
+        }else{
+            setCheckboxDisabled(false)
         }
     }
 
@@ -274,15 +276,14 @@ export default function CoursePage(props: { course: Course}) {
                                 
                                 {(!editReviewInitialized || (editReviewInitialized && user && user.email != review.user.email)) && (
                                     <div>
-                                    
-                                    <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
-                                    <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
-                                    <div className="">
-                                        <label className="space-x-2 cursor-pointer">
-                                            <span className="label-text text-slate-800 align-middle">Useful?</span> 
-                                            <input type="checkbox" className="checkbox checkbox-primary checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} disabled={checkboxDisabled} checked={isChecked(review.id)} />
-                                        </label>
-                                    </div>
+                                        <p className="mb-1 text-slate-800">Professor: {review.professor}</p>
+                                        <span className="label-text text-slate-800">{review.usefulVoters.length} found useful.</span>
+                                        <div className="">
+                                            <label className="space-x-2 cursor-pointer">
+                                                <span className="label-text text-slate-800 align-middle">Useful?</span> 
+                                                <input type="checkbox" className="checkbox checkbox-primary checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} disabled={checkboxDisabled} checked={isChecked(review.id)} />
+                                            </label>
+                                        </div>
                                     </div>
                                 )}
                                 
@@ -389,7 +390,7 @@ export default function CoursePage(props: { course: Course}) {
                     <div>
                         {(files instanceof Array) && files.map((file: File) => (
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={file.id}>
-                                <img src={review.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
+                                <img src={file.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
                                 <div className="flex justify-between">
                                 {/* <p className="mb-1 text-slate-800 font-semibold">{file.user.email}</p> */}
                                     <div>
