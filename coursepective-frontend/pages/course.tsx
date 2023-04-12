@@ -256,7 +256,7 @@ export default function CoursePage(props: { course: Course}) {
                                             <br></br>
                                             <label htmlFor="comments">Comments:</label>
                                             <br></br>
-                                            <textarea className="textarea textarea-primary textarea-bordered text-slate-300" rows={5} cols={100} maxLength={244} value={comments} id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
+                                            <textarea className="textarea textarea-primary textarea-bordered text-slate-300" rows={5} cols={100} maxLength={1500} value={comments} id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
                                             <br></br>
                                             <button 
                                                 className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
@@ -359,7 +359,7 @@ export default function CoursePage(props: { course: Course}) {
                                 <br></br>
                                 <label htmlFor="comments">Comments:</label>
                                 <br></br>
-                                <textarea className="textarea textarea-primary textarea-bordered" rows={5} cols={100} maxLength={244} placeholder=" You have the power of Markdown and 244 characters: GO" id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
+                                <textarea className="textarea textarea-primary textarea-bordered" rows={5} cols={100} maxLength={1500} placeholder=" You have the power of Markdown and 1500 characters: GO" id="comments" name="comments" onChange={(evt: any) => setComments(evt.target.value as string)}/>
                                 <br></br>
                                 <button 
                                     className="bg-blue-600 hover:bg-blue-700 rounded-md text-gray-50 p-4 active:scale-[98%]"
