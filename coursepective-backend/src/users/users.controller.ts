@@ -12,6 +12,14 @@ export class UsersController {
       user: this.usersService.create(body.email)
     }
   }
+
+  // @Post()
+  // async verifyEmail(@Body() body: { email: string; }) {
+  //   return {
+  //     user: this.usersService.verifyEmail(body.email)
+  //   }
+  // }
+
   @Get('/user/:email')
   findByEmail(@Param('email') email: string) {
     return this.usersService.findOneByEmail(email)

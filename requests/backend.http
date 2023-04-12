@@ -29,8 +29,8 @@ POST {{base_backend_url}}/friends/requests
 Content-Type: application/json
 
 {
-    "originEmail": "john.doe@gmail.com",
-    "destEmail": "navidkpour@gmail.com"
+    "originEmail": "navidkpour@gmail.com",
+    "destEmail": "nacojoe@gmail.com"
 }
 
 ### Accept/Reject Friend Request

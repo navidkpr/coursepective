@@ -37,6 +37,7 @@ class FileService {
         config['url'] = AppConfig.Backend.BaseUrl + config["url"]
         try {
             const response = await axios(config)
+            console.log(response)
             return true
         } catch (error) {
             console.log(error)

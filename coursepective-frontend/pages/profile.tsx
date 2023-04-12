@@ -27,7 +27,6 @@ export default function Profile(props: { user: User}) {
 
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
     const [uploadedFile, setUploadedFile] = useState(null);
-    let count  = 0
 
     async function updateProfileUser() {
         setProfileUser(await (new UsersService()).getUser(profileUser.email as string))
@@ -36,6 +35,11 @@ export default function Profile(props: { user: User}) {
     useEffect(() => {
         updateProfileUser()
     }, [profileVersion])
+
+    useEffect(() => {
+        initProfile()
+        updateUsefulReviews()
+    }, [user])
 
     const router = useRouter()
 
@@ -71,33 +75,40 @@ export default function Profile(props: { user: User}) {
     }
 
     async function checkIfFriends(){
+        console.log("in check if friends")
         const usersService = new UsersService()
         const userEmail = user? user.email : undefined
         const areFriends = await usersService.areFriends(userEmail, profileUser.email)
+        return areFriends
         setAreFriends(areFriends)
         setAreFriendsInitialized(true)
     }
 
-    if(!areFriendsInitialized && user && user.email != profileUser.email){
-        checkIfFriends()
-    }
+    async function initProfile(){
+        if(!user) { return }
+        console.log("init profile")
+        console.log(user?.email, profileUser.email)
+        var friendsMan = false
 
-    if(!friendsInitialized && user && user.email === profileUser.email) {
-        updateFriends()
-    }
-
-    if(!reviewsInitialized) {
-        if(user.email != profileUser.email){
-            if(areFriendsInitialized && areFriends){
-                updateReviews()
-            }
-        }else{
-            updateReviews()
+        if(!areFriendsInitialized && user && user.email != profileUser.email){
+            console.log("before checking if friends")
+            friendsMan = await checkIfFriends()
+        } else if(!friendsInitialized && user && user.email === profileUser.email) {
+            console.log("before updating friends")
+            await updateFriends()
         }
-    }
 
-    if(!usefulReviewsInitialized) {
-        updateUsefulReviews()
+        if(!reviewsInitialized) {
+            if(user?.email != profileUser.email){
+                if(friendsMan){
+                    await updateReviews()
+                }
+            }else{
+                await updateReviews()
+            }
+        }
+        setAreFriends(friendsMan)
+        setAreFriendsInitialized(true)
     }
 
     const uploadToClient = (event: any) => {
@@ -108,6 +119,7 @@ export default function Profile(props: { user: User}) {
     };
 
     const uploadToServer = async () => {
+        console.log("in uploadToServer")
         setFileError("")
         setFileSuccess("")
         if (!uploadedFile || !user || user.email != profileUser.email) {
@@ -132,6 +144,9 @@ export default function Profile(props: { user: User}) {
         if (resp === false){
             setFileError("Could not upload your file. Please try again.")
         }
+
+        console.log(resp)
+
         setProfileVersion(profileVersion+1)
         router.reload()
     };
@@ -165,7 +180,7 @@ export default function Profile(props: { user: User}) {
                         View Friends
                     </button> */}
                     </div>
-                    <div className="flex flex-col mb-4">
+                    {user?.email === profileUser.email && (<div className="flex flex-col mb-4">
                         <div>
                             <p className='mr-4 text-slate-800'>Update profile picture</p>
                             <input type="file" className="file-input file-input-bordered file-input-secondary w-full max-w-xs mr-4" 
@@ -181,7 +196,7 @@ export default function Profile(props: { user: User}) {
                         </div>
                         <p className="font-light text-xl text-red-700">{fileError}</p>
                         <p className="font-light text-xl text-green-700">{fileSuccess}</p>
-                    </div>
+                    </div>)}
                     {friendsInitialized && (
                         <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mb-4">
                             <input type="checkbox" />

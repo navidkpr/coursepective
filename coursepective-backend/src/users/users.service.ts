@@ -32,6 +32,10 @@ export class UsersService {
     return this.userRepository.findOneBy({ email })
   }
 
+  // async verifyEmail(userEmail: string) {
+  //   return this.userRepository.save({ email: userEmail, emailVerified: true })
+  // }
+
   async findOneByEmailOrCreate(email: string, relations=[], relationsLoadStrategy: "join" | "query" = "join") {
     console.log(email)
     const user = await this.userRepository.findOne({ where: { email }, relations, 'relationLoadStrategy': relationsLoadStrategy})
