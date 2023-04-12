@@ -33,19 +33,16 @@ class FileService {
         return files
     }
 
-    // async uploadFile(courseId: string, rating: number, userEmail: string): Promise<boolean> {
-    //     try {
-    //         const response = await axios.post(`${AppConfig.Backend.BaseUrl}/reviews`, {
-    //             rating,
-    //             courseId,
-    //             userEmail
-    //         })
-    //         return true
-    //     } catch (error) {
-    //         console.log(error)
-    //         return false
-    //     }
-    // }
+    async uploadFile(config: any): Promise<boolean> {
+        config['url'] = AppConfig.Backend.BaseUrl + config["url"]
+        try {
+            const response = await axios(config)
+            return true
+        } catch (error) {
+            console.log(error)
+            return false
+        }
+    }
 }
 
 export default FileService

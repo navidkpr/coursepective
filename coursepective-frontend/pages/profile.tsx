@@ -1,18 +1,19 @@
 import { useUser } from '@auth0/nextjs-auth0/client';
-import axios from 'axios';
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import ReviewService, { Review } from "../services/review.service";
 import UsersService, { User } from "../services/users.service";
-import course from './course';
 
 import ReactMarkdown from "react-markdown";
 import remarkGfm from 'remark-gfm';
+import FileService from '../services/file.service';
+import { useRouter } from 'next/router';
 
 export default function Profile(props: { user: User}) {
 
-    const profileUser = props.user
+    const [profileUser, setProfileUser] = useState(props.user)
+    const [profileVersion, setProfileVersion] = useState(1)
     const { user, error, isLoading } = useUser();
     const [friends, setFriends] = useState([] as User[])
     const [friendsInitialized, setFriendsInitialized] = useState(false)   
@@ -26,8 +27,17 @@ export default function Profile(props: { user: User}) {
 
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
     const [uploadedFile, setUploadedFile] = useState(null);
+    let count  = 0
 
+    async function updateProfileUser() {
+        setProfileUser(await (new UsersService()).getUser(profileUser.email as string))
+    }
 
+    useEffect(() => {
+        updateProfileUser()
+    }, [profileVersion])
+
+    const router = useRouter()
 
     if (isLoading) return <div>Loading...</div>;
     if (!user) return <div><a href="/api/auth/login"> Please Log In By Clicking Here</a></div>
@@ -109,26 +119,28 @@ export default function Profile(props: { user: User}) {
 
         var config = {
             method: 'post',
-            url: `http://localhost:8000/users/${profileUser.email}/profile_picture`,
+            url: `/users/${profileUser.email}/profile_picture`,
             headers: { 
                 'Content-Type': 'multipart/form-data'
             },
             data : body
         };
 
-        try {
-            await axios(config);
-            setFileSuccess("Profile picture successfully changed.")
-        } catch (error) {
+        const fileService = new FileService()
+        const resp = await fileService.uploadFile(config);
+
+        if (resp === false){
             setFileError("Could not upload your file. Please try again.")
         }
+        setProfileVersion(profileVersion+1)
+        router.reload()
     };
 
     return (
         <>
-        <div className="bg-slate-400 rounded-lg">
-            <div className="container mx-0 my-60 w-[100%] p-4">
-                <div>
+        <div className="bg-slate-400 rounded-lg ">
+            <div className="container mx-auto my-60 w-[100%] p-4" >
+                <div className='content-center'>
                     {(profileUser.email === user.email || areFriends) && 
                         <div className="relative rounded-lg w-5/6 md:w-5/6  lg:w-4/6 xl:w-3/6 mx-auto">
                             <div className="flex justify-center">

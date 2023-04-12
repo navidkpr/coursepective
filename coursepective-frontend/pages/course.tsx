@@ -32,20 +32,15 @@ export default function CoursePage(props: { course: Course}) {
     const [reviewError, setReviewError] = useState("");
     const [editReviewInitialized, setEditReviewInitialized] = useState(false)
     const [checked, setChecked] = useState(new Map)
-    const [checkboxDisabled, setCheckboxDisabled] = useState(false)
+    const [checkboxDisabled, setCheckboxDisabled] = useState(true)
 
     async function updateReviews() {
-        console.log("in updateReviews")
+        
         const reviewService = new ReviewService()
         const userEmail = user? user.email : undefined
         const fetchedReviews: Review[] = await reviewService.getCourseReviews(course.id, userEmail)
         setReviews(fetchedReviews)
         setReviewsInitialized(true)
-        if (!user){
-            setCheckboxDisabled(true)
-        }else{
-            setCheckboxDisabled(false)
-        }
     }
 
     async function updateFiles() {
@@ -75,18 +70,25 @@ export default function CoursePage(props: { course: Course}) {
     }
 
     async function prepopulateUsefulReviews() {
-        const reviewService = new ReviewService()
         const userEmail = user? user.email : undefined
-        const fetchedReviews: Review[] = await reviewService.getCourseReviews(course.id, userEmail)
+        const fetchedReviews: Review[] = reviews
         const checked_state = alreadyUseful(fetchedReviews, userEmail)
         setChecked(checked_state)
+        if (user){
+            setCheckboxDisabled(false)
+        }
     }
 
     useEffect(() => {
         updateReviews()
-        prepopulateUsefulReviews()
         updateFiles()
     }, [user])
+
+    useEffect(() => {
+        prepopulateUsefulReviews()
+    }, [reviews])
+
+    
 
     async function postReview(e) {
         e.preventDefault();
@@ -117,16 +119,7 @@ export default function CoursePage(props: { course: Course}) {
         return alreadyUsefulChecks
 
     }
-
-    function isChecked(id: string){
-        if (checked.get(id) === true){
-            return true
-        }
-        else {
-            return false
-        }
-    }
-
+    
     async function onCheck(e: React.ChangeEvent<HTMLInputElement>, rID: string){
         if (!user) {
             return
@@ -161,16 +154,16 @@ export default function CoursePage(props: { course: Course}) {
 
         var config = {
             method: 'post',
-            url: `http://localhost:8000/files/course/${course.id}/${user.email}/upload/${filename}`,
+            url: `/files/course/${course.id}/${user.email}/upload/${filename}`,
             headers: { 
                 'Content-Type': 'multipart/form-data'
             },
             data : body
         };
+        const fileService = new FileService()
+        const resp = await fileService.uploadFile(config);
 
-        try {
-            await axios(config);
-        } catch (error) {
+        if (resp === false){
             setFileError("Could not upload your file. Please try again.")
         }
         updateFiles();
@@ -281,7 +274,7 @@ export default function CoursePage(props: { course: Course}) {
                                         <div className="">
                                             <label className="space-x-2 cursor-pointer">
                                                 <span className="label-text text-slate-800 align-middle">Useful?</span> 
-                                                <input type="checkbox" className="checkbox checkbox-primary checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} disabled={checkboxDisabled} checked={isChecked(review.id)} />
+                                                <input type="checkbox" className="checkbox checkbox-primary checkbox-sm border-slate-800/50  align-middle" onChange={(evt) => {onCheck(evt, review.id)}} disabled={checkboxDisabled} checked={checked.get(review.id) === true} />
                                             </label>
                                         </div>
                                     </div>

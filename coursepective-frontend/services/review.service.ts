@@ -64,7 +64,7 @@ class ReviewService {
     }
 
     async getUsefulReviews(userEmail: string | undefined | null){
-        console.log("in getUsersReviews")
+        console.log("in getUsefulReviews")
         const response = await axios.get(`${AppConfig.Backend.BaseUrl}/reviews/useful/${userEmail}`)
         console.log(response.data)
         let reviews: Review[] = []
