@@ -82,6 +82,7 @@ export default function CoursePage(props: { course: Course}) {
     useEffect(() => {
         updateReviews()
         updateFiles()
+        console.log(user?.email_verified)
     }, [user])
 
     useEffect(() => {
@@ -303,7 +304,7 @@ export default function CoursePage(props: { course: Course}) {
                             </div>
                         ))}
                     </div>
-                    { user && (
+                    { user && user.email_verified && (
                         <div className="mt-8 flex-col min-w-[300px]">
                             <form>
                                 <h4 className="mb-2 text-lg">Already took the course? Post a review!</h4>
@@ -375,13 +376,18 @@ export default function CoursePage(props: { course: Course}) {
                                 <h4 className="mb-2 text-lg">Log in to post a review!</h4>
                         </div>
                     )}
+                    { user && !user.email_verified && (
+                        <div className="mt-8 flex-col min-w-[300px]">
+                                <h4 className="mb-2 text-lg">Please verify your email to post a review! If you have already verified you may have to log out and log in again.</h4>
+                        </div>
+                    )}
                 </div>
             )}
             { filesInitialized && (
                 <div className="border-[1px] border-slate-300 rounded-md w-[100%] min-h-[500px] p-8 mt-8">
                     <h3 className="text-2xl font-medium mb-8">Related Files</h3>
                     <div>
-                        {(files instanceof Array) && files.map((file: File) => (
+                        {user && user.email_verified && (files instanceof Array) && files.map((file: File) => (
                             <div className="bg-slate-400 rounded-md p-4 mb-4" key={file.id}>
                                 <img src={file.user.profilePictureUrl} className="w-12 h-12 rounded-full object-cover"/>
                                 <div className="flex justify-between">
@@ -398,7 +404,7 @@ export default function CoursePage(props: { course: Course}) {
                             </div>
                         ))}
                     </div>
-                    { user && (
+                    { user && user.email_verified && (
                         <div className="mt-8 flex-col min-w-[300px]">
                                 <h4 className="mb-2 text-lg">Already took this course? Upload related material!</h4>
                                 <div className="flex flex-col gap-4">
@@ -424,6 +430,11 @@ export default function CoursePage(props: { course: Course}) {
                     { !user && (
                         <div className="mt-8 flex-col min-w-[300px]">
                                 <h4 className="mb-2 text-lg">Log in to upload course files!</h4>
+                        </div>
+                    )}
+                    { user && !user.email_verified && (
+                        <div className="mt-8 flex-col min-w-[300px]">
+                                <h4 className="mb-2 text-lg">Please verify your email to upload course files! If you have already verified you may have to log out and log in again.</h4>
                         </div>
                     )}
                 </div>

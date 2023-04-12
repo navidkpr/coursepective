@@ -27,7 +27,6 @@ export default function Profile(props: { user: User}) {
 
     const [reviewsInitialized, setReviewsInitialized] = useState(false)
     const [uploadedFile, setUploadedFile] = useState(null);
-    let count  = 0
 
     async function updateProfileUser() {
         setProfileUser(await (new UsersService()).getUser(profileUser.email as string))
@@ -36,6 +35,11 @@ export default function Profile(props: { user: User}) {
     useEffect(() => {
         updateProfileUser()
     }, [profileVersion])
+
+    useEffect(() => {
+        initProfile()
+        updateUsefulReviews()
+    }, [user])
 
     const router = useRouter()
 
@@ -71,6 +75,7 @@ export default function Profile(props: { user: User}) {
     }
 
     async function checkIfFriends(){
+        console.log("in check if friends")
         const usersService = new UsersService()
         const userEmail = user? user.email : undefined
         const areFriends = await usersService.areFriends(userEmail, profileUser.email)
@@ -78,26 +83,28 @@ export default function Profile(props: { user: User}) {
         setAreFriendsInitialized(true)
     }
 
-    if(!areFriendsInitialized && user && user.email != profileUser.email){
-        checkIfFriends()
-    }
+    async function initProfile(){
+        if(!user) { return }
+        console.log("init profile")
+        console.log(user?.email, profileUser.email)
 
-    if(!friendsInitialized && user && user.email === profileUser.email) {
-        updateFriends()
-    }
-
-    if(!reviewsInitialized) {
-        if(user.email != profileUser.email){
-            if(areFriendsInitialized && areFriends){
-                updateReviews()
-            }
-        }else{
-            updateReviews()
+        if(!areFriendsInitialized && user && user.email != profileUser.email){
+            console.log("before checking if friends")
+            await checkIfFriends()
+        } else if(!friendsInitialized && user && user.email === profileUser.email) {
+            console.log("before updating friends")
+            await updateFriends()
         }
-    }
 
-    if(!usefulReviewsInitialized) {
-        updateUsefulReviews()
+        if(!reviewsInitialized) {
+            if(user?.email != profileUser.email){
+                if(areFriendsInitialized && areFriends){
+                    await updateReviews()
+                }
+            }else{
+                await updateReviews()
+            }
+        }
     }
 
     const uploadToClient = (event: any) => {
@@ -108,6 +115,7 @@ export default function Profile(props: { user: User}) {
     };
 
     const uploadToServer = async () => {
+        console.log("in uploadToServer")
         setFileError("")
         setFileSuccess("")
         if (!uploadedFile || !user || user.email != profileUser.email) {
@@ -132,6 +140,9 @@ export default function Profile(props: { user: User}) {
         if (resp === false){
             setFileError("Could not upload your file. Please try again.")
         }
+
+        console.log(resp)
+
         setProfileVersion(profileVersion+1)
         router.reload()
     };

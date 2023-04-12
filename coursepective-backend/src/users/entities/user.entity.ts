@@ -35,4 +35,7 @@ export class User {
 
     @Column({ default: false })
     profilePictureVerified: boolean
+
+    // @Column({ default: false })
+    // emailVerified: boolean
 }
