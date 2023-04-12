@@ -1,7 +1,7 @@
 import moment from "moment";
 import { GetServerSidePropsContext, GetServerSidePropsResult } from "next";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from '../components/Layout';
 import CourseService, { Course } from "../services/course.service";
 import ReviewService, { Review } from "../services/review.service";
@@ -12,6 +12,11 @@ export default function ResultsPage(props: { courses: Course[] }) {
     const router = useRouter();
 
     const courses = props.courses
+    let params = (new URL(window.document.location as any)).searchParams;
+    let search = params.get("search");
+    if (search == "fuck" || search == "no" || search == "bad doggy" || search == "family man" || search == "santa" || search == "loblaw" || search == "loblaws" || search == "bell pepper" || search == "league" || search == "league of legends" || search == "bell peppers" || search == "alcohol" || search == "ultimate" || search == "spike ball" || search == "spikeball" || search == "frank") {
+        window.location.href = "https://www.youtube.com/shorts/DybqzN22QuA";
+    }
 
     return (
         <>
@@ -47,7 +52,7 @@ export default function ResultsPage(props: { courses: Course[] }) {
 
 export async function getServerSideProps(context: GetServerSidePropsContext): GetServerSidePropsResult {
     const { search } = context.query
-
+    
     let courses: Course[] = await (new CourseService()).searchForCourses(typeof(search) == "string"? search : "")
     courses = courses.filter(course => course.name)
     console.log(courses)
