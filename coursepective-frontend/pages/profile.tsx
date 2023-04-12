@@ -79,6 +79,7 @@ export default function Profile(props: { user: User}) {
         const usersService = new UsersService()
         const userEmail = user? user.email : undefined
         const areFriends = await usersService.areFriends(userEmail, profileUser.email)
+        return areFriends
         setAreFriends(areFriends)
         setAreFriendsInitialized(true)
     }
@@ -87,10 +88,11 @@ export default function Profile(props: { user: User}) {
         if(!user) { return }
         console.log("init profile")
         console.log(user?.email, profileUser.email)
+        var friendsMan = false
 
         if(!areFriendsInitialized && user && user.email != profileUser.email){
             console.log("before checking if friends")
-            await checkIfFriends()
+            friendsMan = await checkIfFriends()
         } else if(!friendsInitialized && user && user.email === profileUser.email) {
             console.log("before updating friends")
             await updateFriends()
@@ -98,13 +100,15 @@ export default function Profile(props: { user: User}) {
 
         if(!reviewsInitialized) {
             if(user?.email != profileUser.email){
-                if(areFriendsInitialized && areFriends){
+                if(friendsMan){
                     await updateReviews()
                 }
             }else{
                 await updateReviews()
             }
         }
+        setAreFriends(friendsMan)
+        setAreFriendsInitialized(true)
     }
 
     const uploadToClient = (event: any) => {
@@ -176,7 +180,7 @@ export default function Profile(props: { user: User}) {
                         View Friends
                     </button> */}
                     </div>
-                    <div className="flex flex-col mb-4">
+                    {user?.email === profileUser.email && (<div className="flex flex-col mb-4">
                         <div>
                             <p className='mr-4 text-slate-800'>Update profile picture</p>
                             <input type="file" className="file-input file-input-bordered file-input-secondary w-full max-w-xs mr-4" 
@@ -192,7 +196,7 @@ export default function Profile(props: { user: User}) {
                         </div>
                         <p className="font-light text-xl text-red-700">{fileError}</p>
                         <p className="font-light text-xl text-green-700">{fileSuccess}</p>
-                    </div>
+                    </div>)}
                     {friendsInitialized && (
                         <div tabIndex={0} className="collapse collapse-arrow border border-base-300 bg-base-100 rounded-box mb-4">
                             <input type="checkbox" />
