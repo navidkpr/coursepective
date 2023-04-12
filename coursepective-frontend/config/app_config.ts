@@ -1,6 +1,6 @@
 const AppConfig = {
     Backend: {
-        BaseUrl: "http://localhost:8000"
+        BaseUrl: process.env.BACKEND_BASE_URL
     }
 }
 
